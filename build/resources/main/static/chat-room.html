@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #chat-room {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        #message-box {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 200px;
+            overflow-y: scroll;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="chat-room">
+    <h2 id="room-name">Chat Room</h2>
+
+    <!-- 메시지 입력 -->
+    <div class="input-group">
+        <input type="text" id="username" placeholder="Enter your name" />
+        <input type="text" id="message" placeholder="Enter your message" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <!-- 채팅 메시지 표시 -->
+    <div id="message-box"></div>
+</div>
+
+<script>
+    var stompClient = null;
+    var roomId = null;
+
+    // URL에서 roomId 추출
+    function getRoomId() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('roomId');
+    }
+
+    // WebSocket 연결
+    function connect() {
+        roomId = getRoomId();
+        document.getElementById("room-name").textContent = `Chat Room: ${roomId}`;
+
+        var socket = new SockJS('/ws');  // WebSocket 엔드포인트 설정
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe(`/topic/room/${roomId}`, function (message) {
+                showMessage(JSON.parse(message.body));
+            });
+        });
+    }
+
+    // 메시지 보내기
+    function sendMessage() {
+        var username = document.getElementById("username").value;
+        var message = document.getElementById("message").value;
+        if (username && message) {
+            stompClient.send(`/app/chat/${roomId}`, {}, JSON.stringify({'username': username, 'message': message}));
+        }
+    }
+
+    // 서버로부터 받은 메시지를 화면에 표시
+    function showMessage(message) {
+        var messageBox = document.getElementById("message-box");
+        var newMessage = document.createElement('div');
+        newMessage.textContent = `${message.username}: ${message.message}`;
+        messageBox.appendChild(newMessage);
+    }
+
+    // 페이지 로드 시 WebSocket 연결
+    window.onload = function() {
+        connect();
+    };
+</script>
+
+</body>
+</html>
