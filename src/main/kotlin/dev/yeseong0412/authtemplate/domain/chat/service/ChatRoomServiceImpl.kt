@@ -2,40 +2,43 @@ package dev.yeseong0412.authtemplate.domain.chat.service
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.ChatRoomRepository
 import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatRoomEntity
-import dev.yeseong0412.authtemplate.domain.chat.domain.mapper.ChatRoomMapper
-import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoom
 import dev.yeseong0412.authtemplate.domain.user.domain.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
 class ChatRoomServiceImpl(
     private val chatRoomRepository: ChatRoomRepository,
-    private val userRepository: UserRepository,
-    private val chatRoomMapper: ChatRoomMapper
+    private val userRepository: UserRepository
 ) : ChatRoomService {
     override fun getAllRooms(): MutableList<ChatRoomEntity> = chatRoomRepository.findAll()
 
-    override fun createRoom(name: String): BaseResponse<ChatRoom> {
-        val room = ChatRoom(name = name)
-        chatRoomRepository.save(chatRoomMapper.toEntity(room))
+    override fun createRoom(name: String): BaseResponse<ChatRoomEntity> {
+
+        val authentication = SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken
+
+        val room = ChatRoomEntity(name = name, participants = mutableListOf(authentication.name))
+        chatRoomRepository.save(room)
+
         return BaseResponse(
             message = "success",
             data = room
         )
     }
 
-    override fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoom> {
+    override fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoomEntity> {
         val room = chatRoomRepository.findById(roomId).orElseThrow()
         val user = userRepository.findByEmail(userEmail)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
-        room.participants.add(user.email)
+        room.participants.add(user.name)
         chatRoomRepository.save(room)
 
         return BaseResponse(
             message = "success",
-            data = ChatRoom(name = room.name, participants = room.participants)
+            data = ChatRoomEntity(name = room.name, participants = room.participants)
         )
     }
 

@@ -1,7 +1,6 @@
 package dev.yeseong0412.authtemplate.domain.chat.presentation
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatRoomEntity
-import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoom
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatMessage
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatOnline
 import dev.yeseong0412.authtemplate.domain.chat.service.ChatRoomService
@@ -22,10 +21,10 @@ class ChatRoomController(
     fun getAllRooms(): MutableList<ChatRoomEntity> = chatRoomService.getAllRooms()
 
     @PostMapping("/rooms")
-    fun createRoom(@RequestParam name: String): BaseResponse<ChatRoom> = chatRoomService.createRoom(name)
+    fun createRoom(@RequestParam name: String): BaseResponse<ChatRoomEntity> = chatRoomService.createRoom(name)
 
     @PostMapping("/rooms/{roomId}/invite")
-    fun inviteToRoom(@PathVariable roomId: Long, @RequestParam participant: String): BaseResponse<ChatRoom> {
+    fun inviteToRoom(@PathVariable roomId: Long, @RequestParam participant: String): BaseResponse<ChatRoomEntity> {
         return chatRoomService.inviteToRoom(roomId, participant)
     }
 

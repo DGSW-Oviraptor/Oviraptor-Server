@@ -3,14 +3,13 @@
 # Server Port
 server:
   port: 8080
-  address: 10.80.162.208
 
 # MySQL Info 본인 MySQL로 수정
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/chats
+    url: jdbc:mysql://localhost:3306/chatprac
     username: root
-    password: root
+    password: Lshdgsw71
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   # JPA Setting
