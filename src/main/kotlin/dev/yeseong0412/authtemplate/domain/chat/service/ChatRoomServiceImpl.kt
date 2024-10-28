@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.domain.chat.domain.service
+package dev.yeseong0412.authtemplate.domain.chat.service
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.ChatRoomRepository
 import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatRoomEntity
@@ -11,14 +11,14 @@ import dev.yeseong0412.authtemplate.global.exception.CustomException
 import org.springframework.stereotype.Service
 
 @Service
-class ChatRoomService(
+class ChatRoomServiceImpl(
     private val chatRoomRepository: ChatRoomRepository,
     private val userRepository: UserRepository,
     private val chatRoomMapper: ChatRoomMapper
-) {
-    fun getAllRooms(): MutableList<ChatRoomEntity> = chatRoomRepository.findAll()
+) : ChatRoomService {
+    override fun getAllRooms(): MutableList<ChatRoomEntity> = chatRoomRepository.findAll()
 
-    fun createRoom(name: String): BaseResponse<ChatRoom> {
+    override fun createRoom(name: String): BaseResponse<ChatRoom> {
         val room = ChatRoom(name = name)
         chatRoomRepository.save(chatRoomMapper.toEntity(room))
         return BaseResponse(
@@ -27,7 +27,7 @@ class ChatRoomService(
         )
     }
 
-    fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoom> {
+    override fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoom> {
         val room = chatRoomRepository.findById(roomId).orElseThrow()
         val user = userRepository.findByEmail(userEmail)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
         room.participants.add(user.email)
@@ -39,7 +39,7 @@ class ChatRoomService(
         )
     }
 
-    fun deleteRoom(roomId: Long): BaseResponse<Unit> {
+    override fun deleteRoom(roomId: Long): BaseResponse<Unit> {
         chatRoomRepository.deleteById(roomId)
 
         return BaseResponse(
@@ -47,11 +47,11 @@ class ChatRoomService(
         )
     }
 
-    fun enterRoom(roomId: Long, username: String): String {
+    override fun enterRoom(roomId: Long, username: String): String {
         return "$username 님이 $roomId 방에 입장하셨습니다."
     }
 
-    fun exitRoom(roomId: Long, username: String): String {
+    override fun exitRoom(roomId: Long, username: String): String {
         val room = chatRoomRepository.findById(roomId).orElseThrow()
         room.participants.remove(username)
         chatRoomRepository.save(room)
