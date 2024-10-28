@@ -38,7 +38,7 @@ class ChatRoomServiceImpl(
 
         return BaseResponse(
             message = "success",
-            data = ChatRoomEntity(name = room.name, participants = room.participants)
+            data = room
         )
     }
 
