@@ -32,8 +32,7 @@ class UserController(
     }
 
     @GetMapping("/info")
-    fun userInfo(@GetAuthenticatedId userId: Long): Long {
-//        return userService.getUserInfo(userId)
-        return userId
+    fun userInfo(): BaseResponse<UserInfo> {
+        return userService.getUserInfo()
     }
 }

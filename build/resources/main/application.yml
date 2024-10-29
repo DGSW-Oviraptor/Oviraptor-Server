@@ -1,10 +1,6 @@
-## application.yml
-
-# Server Port
 server:
   port: 8080
   address: 10.80.162.101
-
 # MySQL Info 본인 MySQL로 수정
 spring:
   datasource:
@@ -12,7 +8,6 @@ spring:
     username: root
     password: Lshdgsw71
     driver-class-name: com.mysql.cj.jdbc.Driver
-
   # JPA Setting
   jpa:
     hibernate:
@@ -22,7 +17,6 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-
 # logging
 logging:
   level:
@@ -34,14 +28,11 @@ logging:
           descriptor:
             sql: trace
 #    root: debug
-
 #JWT Secret Random code (32바이트 길이의 무작위 바이트 문자열을 64자 길이의 16진수 문자열로 인코딩)
 jwt :
   secret : 4626379cadc10451644ebfc33bdef68993cd3edc426640f8c28758cd853dbfa5
-
   expire :
     #access: 600000 = 2 hour
     access: 6000000
     #refresh: 864000000 = 10 day
     refresh: 864000000
-

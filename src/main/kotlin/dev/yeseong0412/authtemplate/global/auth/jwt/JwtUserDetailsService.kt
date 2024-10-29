@@ -1,6 +1,6 @@
 package dev.yeseong0412.authtemplate.global.auth.jwt
 
-import dev.yeseong0412.authtemplate.domain.user.domain.UserRepository
+import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.global.exception.CustomException

@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.domain.user.domain
+package dev.yeseong0412.authtemplate.domain.user.domain.repository
 
 import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import org.springframework.data.jpa.repository.JpaRepository

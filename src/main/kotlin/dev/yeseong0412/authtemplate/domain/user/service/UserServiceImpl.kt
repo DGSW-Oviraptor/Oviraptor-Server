@@ -1,8 +1,9 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
-import dev.yeseong0412.authtemplate.domain.user.domain.UserRepository
+import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
+import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserAuthHolder
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.LoginRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RefreshRequest
@@ -22,7 +23,8 @@ class UserServiceImpl(
     private val userRepository: UserRepository,
     private val userMapper: UserMapper,
     private val bytePasswordEncoder: BCryptPasswordEncoder,
-    private val jwtUtils: JwtUtils
+    private val jwtUtils: JwtUtils,
+    private val userAuthHolder: UserAuthHolder
 ) : UserService {
 
     @Transactional
@@ -78,10 +80,9 @@ class UserServiceImpl(
         )
     }
 
-    override fun getUserInfo(userId: Long): BaseResponse<UserInfo> {
-
-        val user = userRepository.findById(userId).get()
-        val userInfo = UserInfo(id = userId, email = user.email, username = user.name)
+    override fun getUserInfo(): BaseResponse<UserInfo> {
+        val user = userRepository.findByEmail(userAuthHolder.current().email)!!
+        val userInfo = UserInfo(id = user.id, email = user.email, username = user.name)
 
         return BaseResponse(
             message = "success",

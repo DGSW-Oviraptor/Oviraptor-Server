@@ -11,5 +11,5 @@ interface UserService {
     fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit>
     fun loginUser(loginRequest: LoginRequest): BaseResponse<JwtInfo>
     fun refreshToken(refreshRequest: RefreshRequest): BaseResponse<String>
-    fun getUserInfo(userId: Long): BaseResponse<UserInfo>
+    fun getUserInfo(): BaseResponse<UserInfo>
 }

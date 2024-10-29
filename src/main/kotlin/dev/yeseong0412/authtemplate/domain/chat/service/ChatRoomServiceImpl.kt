@@ -2,7 +2,7 @@ package dev.yeseong0412.authtemplate.domain.chat.service
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.ChatRoomRepository
 import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatRoomEntity
-import dev.yeseong0412.authtemplate.domain.user.domain.UserRepository
+import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
