@@ -1,15 +1,14 @@
 package dev.yeseong0412.authtemplate.domain.user.presentation
 
+import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.LoginRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RefreshRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RegisterUserRequest
 import dev.yeseong0412.authtemplate.domain.user.service.UserService
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtInfo
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/user")
@@ -30,5 +29,11 @@ class UserController(
     @PostMapping("/refresh")
     fun refreshUser(@RequestBody refreshRequest: RefreshRequest): BaseResponse<String> {
         return userService.refreshToken(refreshRequest)
+    }
+
+    @GetMapping("/info")
+    fun userInfo(@GetAuthenticatedId userId: Long): Long {
+//        return userService.getUserInfo(userId)
+        return userId
     }
 }

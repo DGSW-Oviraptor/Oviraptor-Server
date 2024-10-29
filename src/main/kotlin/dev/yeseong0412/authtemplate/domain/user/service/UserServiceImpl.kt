@@ -2,6 +2,7 @@ package dev.yeseong0412.authtemplate.domain.user.service
 
 import dev.yeseong0412.authtemplate.domain.user.domain.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
+import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.LoginRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RefreshRequest
@@ -74,6 +75,17 @@ class UserServiceImpl(
             data = jwtUtils.refreshToken(
                 user = userMapper.toDomain(user!!)
             )
+        )
+    }
+
+    override fun getUserInfo(userId: Long): BaseResponse<UserInfo> {
+
+        val user = userRepository.findById(userId).get()
+        val userInfo = UserInfo(id = userId, email = user.email, username = user.name)
+
+        return BaseResponse(
+            message = "success",
+            data = userInfo
         )
     }
 }

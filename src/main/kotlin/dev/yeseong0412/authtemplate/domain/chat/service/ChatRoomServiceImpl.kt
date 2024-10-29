@@ -4,6 +4,7 @@ import dev.yeseong0412.authtemplate.domain.chat.domain.ChatRoomRepository
 import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatRoomEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
+import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
 import org.springframework.stereotype.Service
@@ -11,7 +12,8 @@ import org.springframework.stereotype.Service
 @Service
 class ChatRoomServiceImpl(
     private val chatRoomRepository: ChatRoomRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val jwtUtils: JwtUtils
 ) : ChatRoomService {
     override fun getAllRooms(): MutableList<ChatRoomEntity> = chatRoomRepository.findAll()
 
@@ -48,12 +50,14 @@ class ChatRoomServiceImpl(
         )
     }
 
-    override fun enterRoom(roomId: Long, username: String): String {
+    override fun enterRoom(roomId: Long, token: String): String {
+        val username = jwtUtils.getUsername(token)
         return "$username 님이 $roomId 방에 입장하셨습니다."
     }
 
-    override fun exitRoom(roomId: Long, username: String): String {
+    override fun exitRoom(roomId: Long, token: String): String {
         val room = chatRoomRepository.findById(roomId).orElseThrow()
+        val username = jwtUtils.getUsername(token)
         room.participants.remove(username)
         chatRoomRepository.save(room)
 

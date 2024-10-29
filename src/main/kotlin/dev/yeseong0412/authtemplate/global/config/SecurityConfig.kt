@@ -49,6 +49,7 @@ class SecurityConfig (
                 it
                     .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                     .requestMatchers("/user/**","/stomp/chat/**").permitAll()
+                    .requestMatchers("/ws-info/**").permitAll()
                     .requestMatchers("/ws/**","/stomp/chat/**").permitAll()
                     .anyRequest().authenticated()
             }

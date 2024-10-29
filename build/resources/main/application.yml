@@ -3,6 +3,7 @@
 # Server Port
 server:
   port: 8080
+  address: 10.80.162.101
 
 # MySQL Info 본인 MySQL로 수정
 spring:
