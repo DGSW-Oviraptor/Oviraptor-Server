@@ -12,5 +12,5 @@ class ChatRoomEntity(
     val name: String, // Email
 
     @ElementCollection
-    val participants: MutableList<String> = mutableListOf()
+    val participants: MutableSet<String> = mutableSetOf()
 )

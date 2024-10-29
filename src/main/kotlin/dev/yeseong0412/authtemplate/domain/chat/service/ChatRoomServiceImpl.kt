@@ -21,7 +21,7 @@ class ChatRoomServiceImpl(
 
         val authentication = SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken
 
-        val room = ChatRoomEntity(name = name, participants = mutableListOf(authentication.name))
+        val room = ChatRoomEntity(name = name, participants = mutableSetOf(authentication.name))
         chatRoomRepository.save(room)
 
         return BaseResponse(
