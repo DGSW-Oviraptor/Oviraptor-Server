@@ -6,8 +6,6 @@ import dev.yeseong0412.authtemplate.domain.user.domain.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,11 +15,11 @@ class ChatRoomServiceImpl(
 ) : ChatRoomService {
     override fun getAllRooms(): MutableList<ChatRoomEntity> = chatRoomRepository.findAll()
 
-    override fun createRoom(name: String): BaseResponse<ChatRoomEntity> {
+    override fun createRoom(name: String, userId: Long): BaseResponse<ChatRoomEntity> {
 
-        val authentication = SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken
+        val user = userRepository.findById(userId).get()
 
-        val room = ChatRoomEntity(name = name, participants = mutableSetOf(authentication.name))
+        val room = ChatRoomEntity(name = name, participants = mutableSetOf(user.name))
         chatRoomRepository.save(room)
 
         return BaseResponse(

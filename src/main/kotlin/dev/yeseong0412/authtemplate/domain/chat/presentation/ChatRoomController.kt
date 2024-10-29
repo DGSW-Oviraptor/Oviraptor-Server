@@ -6,6 +6,7 @@ import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatOnline
 import dev.yeseong0412.authtemplate.domain.chat.service.ChatRoomService
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
+import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.web.bind.annotation.*
@@ -21,7 +22,7 @@ class ChatRoomController(
     fun getAllRooms(): MutableList<ChatRoomEntity> = chatRoomService.getAllRooms()
 
     @PostMapping("/rooms")
-    fun createRoom(@RequestParam name: String): BaseResponse<ChatRoomEntity> = chatRoomService.createRoom(name)
+    fun createRoom(@RequestParam name: String, @GetAuthenticatedId userId: Long): BaseResponse<ChatRoomEntity> = chatRoomService.createRoom(name, userId)
 
     @PostMapping("/rooms/{roomId}/invite")
     fun inviteToRoom(@PathVariable roomId: Long, @RequestParam participant: String): BaseResponse<ChatRoomEntity> {
