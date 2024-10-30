@@ -8,6 +8,7 @@ import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
 import org.springframework.stereotype.Service
+import java.util.LinkedHashSet
 
 @Service
 class ChatRoomServiceImpl(
@@ -19,7 +20,7 @@ class ChatRoomServiceImpl(
     override fun createRoom(name: String, userId: Long): BaseResponse<ChatRoomEntity> {
         val user = userRepository.findById(userId).get()
 
-        val room = ChatRoomEntity(name = name, participants = mutableSetOf(user.name))
+        val room = ChatRoomEntity(name = name, participants = mutableSetOf(user))
         chatRoomRepository.save(room)
 
         return BaseResponse(
@@ -31,8 +32,8 @@ class ChatRoomServiceImpl(
     override fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoomEntity> {
         val room = chatRoomRepository.findById(roomId).orElseThrow()
         val user = userRepository.findByEmail(userEmail)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
-        if (room.participants.size < 8) throw CustomException(ChatRoomErrorCode.CHAT_ROOM_NUMBER_LIMIT_EXCEEDED)
-        room.participants.add(user.name)
+        if (room.participants.size >= 8) throw CustomException(ChatRoomErrorCode.CHAT_ROOM_NUMBER_LIMIT_EXCEEDED)
+        room.participants.add(user)
         chatRoomRepository.save(room)
 
         return BaseResponse(
@@ -57,7 +58,7 @@ class ChatRoomServiceImpl(
     override fun exitRoom(roomId: Long, userId: Long): String {
         val room = chatRoomRepository.findById(roomId).orElseThrow()
         val user = userRepository.findById(userId).orElseThrow()
-        room.participants.remove(user.name)
+        room.participants.remove(user)
         chatRoomRepository.save(room)
 
         return "${user.name} 님이 $roomId 방에서 퇴장하셨습니다."

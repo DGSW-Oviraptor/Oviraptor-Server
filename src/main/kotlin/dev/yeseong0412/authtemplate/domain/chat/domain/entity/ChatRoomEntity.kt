@@ -1,5 +1,6 @@
 package dev.yeseong0412.authtemplate.domain.chat.domain.entity
 
+import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import jakarta.persistence.*
 
 @Entity(name = "chatroom")
@@ -11,6 +12,6 @@ class ChatRoomEntity(
     @Column(nullable = false)
     val name: String, // Email
 
-    @ElementCollection
-    val participants: MutableSet<String> = mutableSetOf()
+    @ManyToMany
+    val participants: MutableSet<UserEntity> = mutableSetOf()
 )
