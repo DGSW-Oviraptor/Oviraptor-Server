@@ -1,10 +1,11 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
+import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
-import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserAuthHolder
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
+import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.ChangeInfoRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.LoginRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RefreshRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RegisterUserRequest
@@ -23,8 +24,7 @@ class UserServiceImpl(
     private val userRepository: UserRepository,
     private val userMapper: UserMapper,
     private val bytePasswordEncoder: BCryptPasswordEncoder,
-    private val jwtUtils: JwtUtils,
-    private val userAuthHolder: UserAuthHolder
+    private val jwtUtils: JwtUtils
 ) : UserService {
 
     @Transactional
@@ -80,13 +80,32 @@ class UserServiceImpl(
         )
     }
 
-    override fun getUserInfo(): BaseResponse<UserInfo> {
-        val user = userRepository.findByEmail(userAuthHolder.current().email)!!
+    override fun getUserInfo(userId: Long): BaseResponse<UserInfo> {
+        val user = userRepository.findById(userId).orElseThrow()
         val userInfo = UserInfo(id = user.id, email = user.email, username = user.name)
 
         return BaseResponse(
             message = "success",
             data = userInfo
+        )
+    }
+
+    override fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserEntity> {
+        val user = userRepository.findById(userId).orElseThrow()
+        if (changeInfoRequest.email != "") {
+            user.email = changeInfoRequest.email
+        }
+        if (changeInfoRequest.name != "") {
+            user.name = changeInfoRequest.name
+        }
+        if (changeInfoRequest.password != "") {
+            user.password = bytePasswordEncoder.encode(changeInfoRequest.password.trim())
+        }
+        userRepository.save(user)
+
+        return BaseResponse(
+            message = "success",
+            data = UserEntity(id = user.id, email = user.email, name = user.name, password = changeInfoRequest.password, role = user.role)
         )
     }
 }

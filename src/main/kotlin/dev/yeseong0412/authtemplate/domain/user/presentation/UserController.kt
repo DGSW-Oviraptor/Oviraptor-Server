@@ -1,12 +1,15 @@
 package dev.yeseong0412.authtemplate.domain.user.presentation
 
+import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
+import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.ChangeInfoRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.LoginRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RefreshRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RegisterUserRequest
 import dev.yeseong0412.authtemplate.domain.user.service.UserService
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtInfo
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
+import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -31,7 +34,12 @@ class UserController(
     }
 
     @GetMapping("/info")
-    fun userInfo(): BaseResponse<UserInfo> {
-        return userService.getUserInfo()
+    fun getUserInfo(@GetAuthenticatedId userId: Long): BaseResponse<UserInfo> {
+        return userService.getUserInfo(userId)
+    }
+
+    @PatchMapping("/info")
+    fun changeUserInfo(@GetAuthenticatedId userId: Long, @RequestBody changeInfoRequest: ChangeInfoRequest): BaseResponse<UserEntity> {
+        return userService.changeUserInfo(userId, changeInfoRequest)
     }
 }

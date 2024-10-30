@@ -11,15 +11,15 @@ class UserEntity(
     val id: Long? = null, // ID (PK)
 
     @Column(nullable = false)
-    val email: String, // Email
+    var email: String, // Email
 
     @Column(nullable = false)
-    val name: String,
+    var name: String,
 
     @Column(nullable = false)
-    val password: String, // Password
+    var password: String, // Password
 
     @Column(nullable = false)
-    val role: UserRoles = UserRoles.ROLE_USER
+    var role: UserRoles = UserRoles.ROLE_USER
 
 )
