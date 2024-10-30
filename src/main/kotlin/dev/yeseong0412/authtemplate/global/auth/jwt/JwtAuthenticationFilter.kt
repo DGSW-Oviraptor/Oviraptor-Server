@@ -28,7 +28,7 @@ class JwtAuthenticationFilter(
             return
         }
 
-        if (path.startsWith("/user/")
+        if (path.startsWith("/user")
         ) {
             filterChain.doFilter(request, response)
             return
@@ -39,7 +39,6 @@ class JwtAuthenticationFilter(
             filterChain.doFilter(request, response)
             return
         }
-
 
         if (token.isNullOrEmpty() || !token.startsWith("Bearer ")) {
             setErrorResponse(response, JwtErrorCode.JWT_EMPTY_EXCEPTION)
