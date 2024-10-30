@@ -110,4 +110,23 @@ class UserServiceImpl(
             data = UserEntity(id = user.id, email = user.email, name = user.name, password = changeInfoRequest.password, role = user.role)
         )
     }
+
+    override fun addFriend(userId: Long, userEmail: String): BaseResponse<UserEntity> {
+        val user = userRepository.findById(userId).orElseThrow()
+        val friend = userRepository.findByEmail(userEmail)
+
+        user.friends.add(friend!!)
+        userRepository.save(user)
+
+        return BaseResponse(
+            message = "success",
+            data = user
+        )
+    }
+
+    override fun getAllFriends(userId: Long): MutableList<UserEntity> {
+        val user = userRepository.findById(userId).orElseThrow()
+
+        return user.friends
+    }
 }

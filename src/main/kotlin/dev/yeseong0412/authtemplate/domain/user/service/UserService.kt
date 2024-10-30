@@ -15,4 +15,6 @@ interface UserService {
     fun refreshToken(refreshRequest: RefreshRequest): BaseResponse<String>
     fun getUserInfo(userId: Long): BaseResponse<UserInfo>
     fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserEntity>
+    fun addFriend(userId: Long, userEmail: String): BaseResponse<UserEntity>
+    fun getAllFriends(userId: Long): MutableList<UserEntity>
 }

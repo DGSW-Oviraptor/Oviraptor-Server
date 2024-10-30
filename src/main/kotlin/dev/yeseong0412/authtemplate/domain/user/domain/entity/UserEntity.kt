@@ -19,6 +19,9 @@ class UserEntity(
     @Column(nullable = false)
     var password: String, // Password
 
+    @ManyToMany
+    val friends: MutableList<UserEntity> = mutableListOf(),
+
     @Column(nullable = false)
     var role: UserRoles = UserRoles.ROLE_USER
 

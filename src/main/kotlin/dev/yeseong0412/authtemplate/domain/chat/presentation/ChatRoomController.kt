@@ -7,6 +7,7 @@ import dev.yeseong0412.authtemplate.domain.chat.service.ChatRoomService
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.web.bind.annotation.*
@@ -18,19 +19,23 @@ class ChatRoomController(
     val jwtUtils: JwtUtils
 ) {
 
+    @Operation(summary = "방 목록")
     @GetMapping("/rooms")
     fun getAllRooms(): MutableList<ChatRoomEntity> = chatRoomService.getAllRooms()
 
-    @PostMapping("/rooms")
+    @Operation(summary = "방 생성")
+    @PostMapping("/create")
     fun createRoom(@RequestParam name: String, @GetAuthenticatedId userId: Long): BaseResponse<ChatRoomEntity> {
         return chatRoomService.createRoom(name, userId)
     }
 
+    @Operation(summary = "초대")
     @PostMapping("/rooms/{roomId}/invite")
     fun inviteToRoom(@PathVariable roomId: Long, @RequestParam participant: String): BaseResponse<ChatRoomEntity> {
         return chatRoomService.inviteToRoom(roomId, participant)
     }
 
+    @Operation(summary = "방 삭제")
     @DeleteMapping("/rooms/{roomId}")
     fun deleteRoom(@PathVariable roomId: Long): BaseResponse<Unit> {
         return chatRoomService.deleteRoom(roomId)

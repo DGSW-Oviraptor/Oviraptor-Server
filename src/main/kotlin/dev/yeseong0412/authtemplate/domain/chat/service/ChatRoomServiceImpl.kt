@@ -8,7 +8,6 @@ import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
 import org.springframework.stereotype.Service
-import java.util.LinkedHashSet
 
 @Service
 class ChatRoomServiceImpl(
