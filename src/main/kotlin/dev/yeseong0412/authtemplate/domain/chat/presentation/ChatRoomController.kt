@@ -9,6 +9,7 @@ import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -22,8 +23,8 @@ class ChatRoomController(
     fun getAllRooms(): MutableList<ChatRoomEntity> = chatRoomService.getAllRooms()
 
     @PostMapping("/rooms")
-    fun createRoom(@RequestParam name: String, @GetAuthenticatedId userId: Long): BaseResponse<ChatRoomEntity> {
-        return chatRoomService.createRoom(name, userId)
+    fun createRoom(@RequestParam name: String, @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? -1L : #this.user.name") username: String): BaseResponse<ChatRoomEntity> {
+        return chatRoomService.createRoom(name, username)
     }
 
     @PostMapping("/rooms/{roomId}/invite")
@@ -39,19 +40,19 @@ class ChatRoomController(
     // 채팅방 입장
     @MessageMapping("/enter/{roomId}")
     @SendTo("/topic/room/{roomId}")
-    fun enterRoom(@PathVariable roomId: Long, token: String): String {
+    fun enterRoom(@PathVariable roomId: Long, @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? -1L : #this.name") username: String): String {
         println(roomId)
         println("enter")
-        return chatRoomService.enterRoom(roomId, token)
+        return chatRoomService.enterRoom(roomId, username)
     }
 
     // 채팅방 퇴장
     @MessageMapping("/exit/{roomId}")
     @SendTo("/topic/room/{roomId}")
-    fun exitRoom(@PathVariable roomId: Long, token: String): String {
+    fun exitRoom(@PathVariable roomId: Long, @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? -1L : #this.name") username: String): String {
         println(roomId)
         println("exit")
-        return chatRoomService.exitRoom(roomId, token)
+        return chatRoomService.exitRoom(roomId, username)
     }
 
 //    @MessageMapping("/chat/{roomId}")

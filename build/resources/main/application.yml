@@ -1,5 +1,6 @@
 server:
   port: 8080
+
 # MySQL Info 본인 MySQL로 수정
 spring:
   datasource:

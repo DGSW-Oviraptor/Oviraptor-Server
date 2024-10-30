@@ -17,11 +17,9 @@ class ChatRoomServiceImpl(
 ) : ChatRoomService {
     override fun getAllRooms(): MutableList<ChatRoomEntity> = chatRoomRepository.findAll()
 
-    override fun createRoom(name: String, userId: Long): BaseResponse<ChatRoomEntity> {
+    override fun createRoom(name: String, username: String): BaseResponse<ChatRoomEntity> {
 
-        val user = userRepository.findById(userId).get()
-
-        val room = ChatRoomEntity(name = name, participants = mutableSetOf(user.name))
+        val room = ChatRoomEntity(name = name, participants = mutableSetOf(username))
         chatRoomRepository.save(room)
 
         return BaseResponse(
@@ -50,14 +48,12 @@ class ChatRoomServiceImpl(
         )
     }
 
-    override fun enterRoom(roomId: Long, token: String): String {
-        val username = jwtUtils.getUsername(token)
+    override fun enterRoom(roomId: Long, username: String): String {
         return "$username 님이 $roomId 방에 입장하셨습니다."
     }
 
-    override fun exitRoom(roomId: Long, token: String): String {
+    override fun exitRoom(roomId: Long, username: String): String {
         val room = chatRoomRepository.findById(roomId).orElseThrow()
-        val username = jwtUtils.getUsername(token)
         room.participants.remove(username)
         chatRoomRepository.save(room)
 
