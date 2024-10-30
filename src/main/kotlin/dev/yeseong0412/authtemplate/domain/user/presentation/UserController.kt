@@ -7,7 +7,6 @@ import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.Registe
 import dev.yeseong0412.authtemplate.domain.user.service.UserService
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtInfo
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
-import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
 import org.springframework.web.bind.annotation.*
 
 @RestController
