@@ -5,9 +5,9 @@ import dev.yeseong0412.authtemplate.global.common.BaseResponse
 
 interface ChatRoomService {
     fun getAllRooms(): MutableList<ChatRoomEntity>
-    fun createRoom(name: String, username: String): BaseResponse<ChatRoomEntity>
+    fun createRoom(name: String, userId: Long): BaseResponse<ChatRoomEntity>
     fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoomEntity>
     fun deleteRoom(roomId: Long): BaseResponse<Unit>
-    fun enterRoom(roomId: Long, username: String): String
-    fun exitRoom(roomId: Long, username: String): String
+    fun enterRoom(roomId: Long, userId: Long): String
+    fun exitRoom(roomId: Long, userId: Long): String
 }
