@@ -29,8 +29,7 @@ class UserServiceImpl(
 
     @Transactional
     override fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit> {
-
-        if(userRepository.existsByEmail(registerUserRequest.email)) throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
+        if (userRepository.existsByEmail(registerUserRequest.email)) throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
 
         userRepository.save(
             userMapper.toEntity(
@@ -46,7 +45,6 @@ class UserServiceImpl(
 
     @Transactional(readOnly = true)
     override fun loginUser(loginRequest: LoginRequest): BaseResponse<JwtInfo> {
-
         val user = userRepository.findByEmail(loginRequest.email)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 
         if (bytePasswordEncoder.matches(user.password, loginRequest.password)) throw CustomException(UserErrorCode.USER_NOT_MATCH)
@@ -91,7 +89,10 @@ class UserServiceImpl(
     }
 
     override fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserEntity> {
+        if (userRepository.existsByEmail(changeInfoRequest.email)) throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
+
         val user = userRepository.findById(userId).orElseThrow()
+
         if (changeInfoRequest.email != "") {
             user.email = changeInfoRequest.email
         }
@@ -101,6 +102,7 @@ class UserServiceImpl(
         if (changeInfoRequest.password != "") {
             user.password = bytePasswordEncoder.encode(changeInfoRequest.password.trim())
         }
+
         userRepository.save(user)
 
         return BaseResponse(

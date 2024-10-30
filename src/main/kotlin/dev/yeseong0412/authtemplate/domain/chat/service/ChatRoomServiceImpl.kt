@@ -2,6 +2,7 @@ package dev.yeseong0412.authtemplate.domain.chat.service
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.ChatRoomRepository
 import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatRoomEntity
+import dev.yeseong0412.authtemplate.domain.chat.exception.ChatRoomErrorCode
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
@@ -30,6 +31,7 @@ class ChatRoomServiceImpl(
     override fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoomEntity> {
         val room = chatRoomRepository.findById(roomId).orElseThrow()
         val user = userRepository.findByEmail(userEmail)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
+        if (room.participants.size < 8) throw CustomException(ChatRoomErrorCode.CHAT_ROOM_NUMBER_LIMIT_EXCEEDED)
         room.participants.add(user.name)
         chatRoomRepository.save(room)
 

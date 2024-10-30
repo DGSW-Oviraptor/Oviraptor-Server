@@ -3,7 +3,7 @@ package dev.yeseong0412.authtemplate.domain.user.exception
 import dev.yeseong0412.authtemplate.global.exception.CustomErrorCode
 import org.springframework.http.HttpStatus
 
-enum class UserErrorCode (
+enum class UserErrorCode(
     override val status: HttpStatus,
     override val state: String,
     override val message: String,
