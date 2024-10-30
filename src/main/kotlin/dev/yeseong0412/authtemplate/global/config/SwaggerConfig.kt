@@ -35,8 +35,8 @@ class SwaggerConfig : WebMvcConfigurer {
             )
             .addServersItem(Server().url("/"))
             .info(
-                Info().title("WEBTOON API")
-                    .description("Webtoon API Spec")
+                Info().title("CHAT API")
+                    .description("Chat API Spec")
                     .version("v1.0.0")
             )
     }
