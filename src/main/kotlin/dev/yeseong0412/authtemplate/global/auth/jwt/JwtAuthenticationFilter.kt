@@ -40,8 +40,6 @@ class JwtAuthenticationFilter(
             return
         }
 
-
-
         if (token.isNullOrEmpty() || !token.startsWith("Bearer ")) {
             setErrorResponse(response, JwtErrorCode.JWT_EMPTY_EXCEPTION)
         } else {
