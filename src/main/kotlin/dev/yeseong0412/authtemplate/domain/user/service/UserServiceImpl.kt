@@ -89,10 +89,9 @@ class UserServiceImpl(
     }
 
     override fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserEntity> {
-        if (userRepository.existsByEmail(changeInfoRequest.email)) throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
-
         val user = userRepository.findById(userId).orElseThrow()
-
+        if (userRepository.existsByEmail(changeInfoRequest.email) || user.email != changeInfoRequest.email) throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
+        
         if (changeInfoRequest.email != "") {
             user.email = changeInfoRequest.email
         }
