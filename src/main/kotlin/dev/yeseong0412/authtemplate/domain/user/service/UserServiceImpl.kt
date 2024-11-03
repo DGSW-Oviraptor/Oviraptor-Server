@@ -80,7 +80,7 @@ class UserServiceImpl(
 
     override fun getUserInfo(userId: Long): BaseResponse<UserInfo> {
         val user = userRepository.findById(userId).orElseThrow()
-        val userInfo = UserInfo(id = user.id, email = user.email, username = user.name)
+        val userInfo = UserInfo(email = user.email, name = user.name)
 
         return BaseResponse(
             message = "success",
@@ -124,9 +124,10 @@ class UserServiceImpl(
         )
     }
 
-    override fun getAllFriends(userId: Long): MutableList<UserEntity> {
+    override fun getAllFriends(userId: Long): List<UserInfo> {
         val user = userRepository.findById(userId).orElseThrow()
+        val friends = user.friends
 
-        return user.friends
+        return friends.map { UserInfo(email = it.email, name = it.name) }
     }
 }

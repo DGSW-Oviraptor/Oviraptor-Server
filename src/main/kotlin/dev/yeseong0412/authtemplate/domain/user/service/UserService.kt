@@ -16,5 +16,5 @@ interface UserService {
     fun getUserInfo(userId: Long): BaseResponse<UserInfo>
     fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserEntity>
     fun addFriend(userId: Long, userEmail: String): BaseResponse<UserEntity>
-    fun getAllFriends(userId: Long): MutableList<UserEntity>
+    fun getAllFriends(userId: Long): List<UserInfo>
 }

@@ -57,7 +57,7 @@ class UserController(
 
     @Operation(summary = "친구목록")
     @GetMapping("/friends")
-    fun getAllFriends(@GetAuthenticatedId userId: Long): MutableList<UserEntity> {
+    fun getAllFriends(@GetAuthenticatedId userId: Long): List<UserInfo> {
         return userService.getAllFriends(userId)
     }
 }

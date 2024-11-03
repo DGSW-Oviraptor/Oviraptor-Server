@@ -1,6 +1,5 @@
 package dev.yeseong0412.authtemplate.global.config
 
-
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
