@@ -1,5 +1,6 @@
 package dev.yeseong0412.authtemplate.domain.user.domain.entity
 
+import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatRoomEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.enums.UserRoles
 import jakarta.persistence.*
 
@@ -21,6 +22,9 @@ class UserEntity(
 
     @ManyToMany
     val friends: MutableList<UserEntity> = mutableListOf(),
+
+    @ManyToMany
+    val rooms: MutableList<ChatRoomEntity> = mutableListOf(),
 
     @Column(nullable = false)
     var role: UserRoles = UserRoles.ROLE_USER

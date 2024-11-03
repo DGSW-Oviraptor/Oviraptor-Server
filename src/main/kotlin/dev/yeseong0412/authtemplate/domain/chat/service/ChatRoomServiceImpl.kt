@@ -1,7 +1,9 @@
 package dev.yeseong0412.authtemplate.domain.chat.service
 
-import dev.yeseong0412.authtemplate.domain.chat.domain.ChatRoomRepository
+import dev.yeseong0412.authtemplate.domain.chat.domain.repository.ChatRoomRepository
 import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatRoomEntity
+import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomIdInfo
+import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.exception.ChatRoomErrorCode
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
@@ -14,30 +16,44 @@ class ChatRoomServiceImpl(
     private val chatRoomRepository: ChatRoomRepository,
     private val userRepository: UserRepository
 ) : ChatRoomService {
-    override fun getAllRooms(): MutableList<ChatRoomEntity> = chatRoomRepository.findAll()
+    override fun getAllRooms(): List<ChatRoomIdInfo> {
+        val rooms = chatRoomRepository.findAll()
+        val newList = mutableListOf<ChatRoomIdInfo>()
+        rooms.forEach {
+            newList.add(ChatRoomIdInfo(it.id, it.name, it.participants.map { pr -> pr.name }))
+        }
+        return newList
+    }
 
-    override fun createRoom(name: String, userId: Long): BaseResponse<ChatRoomEntity> {
+    override fun createRoom(name: String, userId: Long): BaseResponse<ChatRoomInfo> {
         val user = userRepository.findById(userId).get()
 
         val room = ChatRoomEntity(name = name, participants = mutableSetOf(user))
         chatRoomRepository.save(room)
 
+        user.rooms.add(room)
+        userRepository.save(user)
+
         return BaseResponse(
             message = "success",
-            data = room
+            data = ChatRoomInfo(name = room.name, participants = room.participants.map { it -> it.name})
         )
     }
 
-    override fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoomEntity> {
+    override fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoomInfo> {
         val room = chatRoomRepository.findById(roomId).orElseThrow()
         val user = userRepository.findByEmail(userEmail)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
+
         if (room.participants.size >= 8) throw CustomException(ChatRoomErrorCode.CHAT_ROOM_NUMBER_LIMIT_EXCEEDED)
+
         room.participants.add(user)
+        user.rooms.add(room)
         chatRoomRepository.save(room)
+        userRepository.save(user)
 
         return BaseResponse(
             message = "success",
-            data = room
+            data = ChatRoomInfo(name = room.name, participants = room.participants.map { it -> it.name})
         )
     }
 

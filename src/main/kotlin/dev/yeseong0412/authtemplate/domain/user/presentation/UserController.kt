@@ -1,6 +1,5 @@
 package dev.yeseong0412.authtemplate.domain.user.presentation
 
-import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.ChangeInfoRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.LoginRequest
@@ -37,6 +36,12 @@ class UserController(
         return userService.refreshToken(refreshRequest)
     }
 
+    @Operation(summary = "내 방")
+    @GetMapping("/rooms")
+    fun getAllRooms(@GetAuthenticatedId userId: Long): BaseResponse<List<String>> {
+        return userService.getAllRooms(userId)
+    }
+
     @Operation(summary = "내 정보")
     @GetMapping("/info")
     fun getUserInfo(@GetAuthenticatedId userId: Long): BaseResponse<UserInfo> {
@@ -45,13 +50,13 @@ class UserController(
 
     @Operation(summary = "내 정보 수정")
     @PatchMapping("/info")
-    fun changeUserInfo(@GetAuthenticatedId userId: Long, @RequestBody changeInfoRequest: ChangeInfoRequest): BaseResponse<UserEntity> {
+    fun changeUserInfo(@GetAuthenticatedId userId: Long, @RequestBody changeInfoRequest: ChangeInfoRequest): BaseResponse<UserInfo> {
         return userService.changeUserInfo(userId, changeInfoRequest)
     }
 
     @Operation(summary = "친구추가")
     @PostMapping("/friends/add")
-    fun addFriend(@GetAuthenticatedId userId: Long, userEmail: String): BaseResponse<UserEntity> {
+    fun addFriend(@GetAuthenticatedId userId: Long, userEmail: String): BaseResponse<UserInfo> {
         return userService.addFriend(userId, userEmail)
     }
 

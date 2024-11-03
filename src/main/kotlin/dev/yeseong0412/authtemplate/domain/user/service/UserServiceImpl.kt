@@ -1,6 +1,5 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
-import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
@@ -78,8 +77,18 @@ class UserServiceImpl(
         )
     }
 
+    override fun getAllRooms(userId: Long): BaseResponse<List<String>> {
+        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
+        val rooms = user.rooms
+
+        return BaseResponse(
+            message = "success",
+            data = rooms.map { it -> it.name }
+        )
+    }
+
     override fun getUserInfo(userId: Long): BaseResponse<UserInfo> {
-        val user = userRepository.findById(userId).orElseThrow()
+        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val userInfo = UserInfo(email = user.email, name = user.name)
 
         return BaseResponse(
@@ -88,7 +97,7 @@ class UserServiceImpl(
         )
     }
 
-    override fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserEntity> {
+    override fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserInfo> {
         val user = userRepository.findById(userId).orElseThrow()
         if (userRepository.existsByEmail(changeInfoRequest.email) && user.email != changeInfoRequest.email) throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
 
@@ -106,11 +115,11 @@ class UserServiceImpl(
 
         return BaseResponse(
             message = "success",
-            data = UserEntity(id = user.id, email = user.email, name = user.name, password = changeInfoRequest.password, role = user.role)
+            data = UserInfo(email = user.email, name = user.name)
         )
     }
 
-    override fun addFriend(userId: Long, userEmail: String): BaseResponse<UserEntity> {
+    override fun addFriend(userId: Long, userEmail: String): BaseResponse<UserInfo> {
         val user = userRepository.findById(userId).orElseThrow()
         val friend = userRepository.findByEmail(userEmail)
 
@@ -119,7 +128,7 @@ class UserServiceImpl(
 
         return BaseResponse(
             message = "success",
-            data = user
+            data = UserInfo(email = userEmail, name = friend.name)
         )
     }
 
