@@ -1,5 +1,6 @@
 package dev.yeseong0412.authtemplate.domain.user.presentation
 
+import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.ChangeInfoRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.LoginRequest
@@ -38,7 +39,7 @@ class UserController(
 
     @Operation(summary = "내 방")
     @GetMapping("/rooms")
-    fun getAllRooms(@GetAuthenticatedId userId: Long): BaseResponse<List<String>> {
+    fun getAllRooms(@GetAuthenticatedId userId: Long): List<ChatRoomInfo> {
         return userService.getAllRooms(userId)
     }
 

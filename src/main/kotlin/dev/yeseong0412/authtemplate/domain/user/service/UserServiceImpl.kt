@@ -1,5 +1,6 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
+import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
@@ -77,14 +78,11 @@ class UserServiceImpl(
         )
     }
 
-    override fun getAllRooms(userId: Long): BaseResponse<List<String>> {
+    override fun getAllRooms(userId: Long): List<ChatRoomInfo> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val rooms = user.rooms
 
-        return BaseResponse(
-            message = "success",
-            data = rooms.map { it -> it.name }
-        )
+        return rooms.map { ChatRoomInfo(name = it.name, participants = it.participants.map { pr -> pr.name}) }
     }
 
     override fun getUserInfo(userId: Long): BaseResponse<UserInfo> {
@@ -124,7 +122,9 @@ class UserServiceImpl(
         val friend = userRepository.findByEmail(userEmail)
 
         user.friends.add(friend!!)
+        friend.friends.add(user)
         userRepository.save(user)
+        userRepository.save(friend)
 
         return BaseResponse(
             message = "success",

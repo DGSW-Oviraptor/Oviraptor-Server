@@ -21,9 +21,19 @@ class UserEntity(
     var password: String, // Password
 
     @ManyToMany
+    @JoinTable(
+        name = "user_friends",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "friend_id")]
+    )
     val friends: MutableList<UserEntity> = mutableListOf(),
 
     @ManyToMany
+    @JoinTable(
+        name = "user_chatroom",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "chatroom_id")]
+    )
     val rooms: MutableList<ChatRoomEntity> = mutableListOf(),
 
     @Column(nullable = false)

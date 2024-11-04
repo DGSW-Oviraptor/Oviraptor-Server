@@ -58,7 +58,11 @@ class ChatRoomServiceImpl(
     }
 
     override fun deleteRoom(roomId: Long): BaseResponse<Unit> {
-        chatRoomRepository.deleteById(roomId)
+        val room = chatRoomRepository.findById(roomId).orElseThrow()
+
+        room.participants.forEach { user -> user.rooms.remove(room) }
+
+        chatRoomRepository.delete(room)
 
         return BaseResponse(
             message = "success"

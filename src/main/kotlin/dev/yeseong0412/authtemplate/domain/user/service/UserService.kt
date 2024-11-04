@@ -1,5 +1,6 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
+import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.ChangeInfoRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.LoginRequest
@@ -12,7 +13,7 @@ interface UserService {
     fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit>
     fun loginUser(loginRequest: LoginRequest): BaseResponse<JwtInfo>
     fun refreshToken(refreshRequest: RefreshRequest): BaseResponse<String>
-    fun getAllRooms(userId: Long): BaseResponse<List<String>>
+    fun getAllRooms(userId: Long): List<ChatRoomInfo>
     fun getUserInfo(userId: Long): BaseResponse<UserInfo>
     fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserInfo>
     fun addFriend(userId: Long, userEmail: String): BaseResponse<UserInfo>
