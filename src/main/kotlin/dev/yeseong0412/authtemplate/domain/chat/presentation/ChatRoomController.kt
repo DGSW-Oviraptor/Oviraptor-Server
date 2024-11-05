@@ -48,9 +48,7 @@ class ChatRoomController(
     fun enterRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): ChatOnline {
         println(roomId)
         println("enter")
-
-        return ChatOnline(writer = "시스템", message = chatRoomService.enterRoom(roomId, userId))
-
+        return chatRoomService.enterRoom(roomId = roomId, userId = userId)
     }
 
     @MessageMapping("/exit/{roomId}")
@@ -58,8 +56,7 @@ class ChatRoomController(
     fun exitRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): ChatOnline {
         println(roomId)
         println("exit")
-
-        return ChatOnline(writer = "시스템", message = chatRoomService.exitRoom(roomId, userId))
+        return chatRoomService.exitRoom(roomId, userId)
     }
 
     @MessageMapping("/chat/{roomId}")
@@ -69,13 +66,6 @@ class ChatRoomController(
         @PathVariable roomId: String,
         message: ChatMessage
     ): ChatOnline {
-        val username = jwtUtils.getUsername(token)
-        val toMessage = ChatOnline(writer = username, message = message.message)
-
-        println(roomId)
-        println(message)
-        println("writer : $username")
-
-        return toMessage
+        return chatRoomService.sendChat(token = token, message = message)
     }
 }
