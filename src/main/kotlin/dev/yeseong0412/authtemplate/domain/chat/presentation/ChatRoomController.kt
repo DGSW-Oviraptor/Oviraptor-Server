@@ -9,6 +9,7 @@ import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
 import io.swagger.v3.oas.annotations.Operation
+import org.springframework.messaging.handler.annotation.Header
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.web.bind.annotation.*
@@ -45,21 +46,22 @@ class ChatRoomController(
     // 채팅방 입장
     @MessageMapping("/enter/{roomId}")
     @SendTo("/topic/room/{roomId}")
-    fun enterRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): String {
+    fun enterRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): ChatOnline {
         println(roomId)
         println("enter")
 
-        return chatRoomService.enterRoom(roomId, userId)
+        return ChatOnline(writer = "시스템", message = chatRoomService.enterRoom(roomId, userId))
+
     }
 
     // 채팅방 퇴장
     @MessageMapping("/exit/{roomId}")
     @SendTo("/topic/room/{roomId}")
-    fun exitRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): String {
+    fun exitRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): ChatOnline {
         println(roomId)
         println("exit")
 
-        return chatRoomService.exitRoom(roomId, userId)
+        return ChatOnline(writer = "시스템", message = chatRoomService.exitRoom(roomId, userId))
     }
 
 //    @MessageMapping("/chat/{roomId}")
@@ -71,14 +73,16 @@ class ChatRoomController(
 
     @MessageMapping("/chat/{roomId}")
     @SendTo("/topic/room/{roomId}")
-    fun sendMessage(@PathVariable roomId: String, message: ChatMessage): ChatOnline {
-        val username = jwtUtils.getUsername(message.token)
+    fun sendMessage(
+        @Header("Authorization") token: String, // 헤더 이름 변경
+        @PathVariable roomId: String,
+        message: ChatMessage
+    ): ChatOnline {
+        val username = jwtUtils.getUsername(token)
         val toMessage = ChatOnline(writer = username, message = message.message)
-
         println(roomId)
         println(message.message)
-        println(message.token)
-
+        println("writer : ${username}")
         return toMessage
     }
 }
