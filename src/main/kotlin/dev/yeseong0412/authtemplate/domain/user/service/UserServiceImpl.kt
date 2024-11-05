@@ -1,15 +1,11 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
-import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
-import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.ChangeInfoRequest
-import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.LoginRequest
-import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RefreshRequest
-import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RegisterUserRequest
+import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtInfo
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.auth.jwt.exception.JwtErrorCode
@@ -118,11 +114,11 @@ class UserServiceImpl(
         )
     }
 
-    override fun addFriend(userId: Long, userEmail: String): BaseResponse<UserInfo> {
+    override fun addFriend(userId: Long, friendRequest: FriendRequest): BaseResponse<UserInfo> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
-        val friend = userRepository.findByEmail(userEmail)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
+        val friend = userRepository.findByEmail(friendRequest.email)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 
-        if (user == friend) {
+        if (user == friend || user.friends.contains(friend)) {
             throw CustomException(UserErrorCode.CANNOT_ADD_FRIEND)
         }
 
@@ -133,7 +129,7 @@ class UserServiceImpl(
 
         return BaseResponse(
             message = "success",
-            data = UserInfo(email = userEmail, name = friend.name)
+            data = UserInfo(email = friend.email, name = friend.name)
         )
     }
 
