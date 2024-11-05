@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate
+package dev.yeseong0412.authtemplate.global.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

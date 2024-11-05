@@ -144,5 +144,4 @@ class UserServiceImpl(
         val user = userRepository.findAllByNameContaining(userName)
         return user.map { UserInfo(email = it.email, name = it.name) }
     }
-
 }
