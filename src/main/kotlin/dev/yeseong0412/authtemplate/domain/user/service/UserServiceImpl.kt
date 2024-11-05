@@ -1,6 +1,7 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
@@ -137,5 +138,10 @@ class UserServiceImpl(
         val friends = user.friends
 
         return friends.map { UserInfo(email = it.email, name = it.name) }
+    }
+
+    override fun searchUserByEmail(userEmail: String): List<UserEntity> {
+        val searchUser : List<UserEntity> = userRepository.findAllByEmail(userEmail)
+        return searchUser
     }
 }
