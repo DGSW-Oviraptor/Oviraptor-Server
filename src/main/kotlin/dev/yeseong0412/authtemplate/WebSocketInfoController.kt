@@ -17,7 +17,8 @@ class WebSocketInfoController {
         return mapOf(
             "messageMapping" to "/app/enter/roomId",
             "sendTo" to "/topic/room/roomId",
-            "description" to "이 경로로 입장 메시지를 전송합니다."
+            "description" to "이 경로로 입장 메시지를 전송합니다.",
+            "return" to "user.name 님이 room.name에 입장하셨습니다."
         )
     }
 
@@ -27,7 +28,8 @@ class WebSocketInfoController {
         return mapOf(
             "messageMapping" to "/app/exit/roomId",
             "sendTo" to "/topic/room/roomId",
-            "description" to "이 경로로 퇴장 메시지를 전송합니다."
+            "description" to "이 경로로 퇴장 메시지를 전송합니다.",
+            "return" to "user.name 님이 room.name에서 퇴장하셨습니다."
         )
     }
 
