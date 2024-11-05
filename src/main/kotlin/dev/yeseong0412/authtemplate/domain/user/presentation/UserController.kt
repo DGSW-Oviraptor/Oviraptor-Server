@@ -2,10 +2,7 @@ package dev.yeseong0412.authtemplate.domain.user.presentation
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
-import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.ChangeInfoRequest
-import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.LoginRequest
-import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RefreshRequest
-import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RegisterUserRequest
+import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*
 import dev.yeseong0412.authtemplate.domain.user.service.UserService
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtInfo
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
@@ -57,8 +54,8 @@ class UserController(
 
     @Operation(summary = "친구추가")
     @PostMapping("/friends/add")
-    fun addFriend(@GetAuthenticatedId userId: Long, userEmail: String): BaseResponse<UserInfo> {
-        return userService.addFriend(userId, userEmail)
+    fun addFriend(@GetAuthenticatedId userId: Long, @RequestBody friendRequest: FriendRequest): BaseResponse<UserInfo> {
+        return userService.addFriend(userId, friendRequest)
     }
 
     @Operation(summary = "친구목록")
