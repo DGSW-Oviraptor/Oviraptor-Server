@@ -15,24 +15,6 @@ import org.springframework.web.bind.annotation.*
 class UserController(
     private val userService: UserService
 ) {
-    @Operation(summary = "회원가입")
-    @PostMapping("/register")
-    fun registerUser(
-        @RequestBody registerUserRequest: RegisterUserRequest): BaseResponse<Unit> {
-        return userService.registerUser(registerUserRequest)
-    }
-
-    @Operation(summary = "로그인")
-    @PostMapping("/login")
-    fun loginUser(@RequestBody loginRequest: LoginRequest): BaseResponse<JwtInfo> {
-        return userService.loginUser(loginRequest)
-    }
-
-    @Operation(summary = "토큰 리프레시")
-    @PostMapping("/refresh")
-    fun refreshUser(@RequestBody refreshRequest: RefreshRequest): BaseResponse<String> {
-        return userService.refreshToken(refreshRequest)
-    }
 
     @Operation(summary = "내 방")
     @GetMapping("/rooms")
