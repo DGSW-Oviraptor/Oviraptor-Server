@@ -59,8 +59,7 @@ class ChatRoomServiceImpl(
     }
 
     override fun deleteRoom(roomId: Long): BaseResponse<Unit> {
-        val room =
-            chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val room = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
 
         room.participants.forEach { user -> user.rooms.remove(room) }
 
