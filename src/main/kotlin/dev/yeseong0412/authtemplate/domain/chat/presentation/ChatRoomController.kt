@@ -2,6 +2,7 @@ package dev.yeseong0412.authtemplate.domain.chat.presentation
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomIdInfo
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatMessage
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatOnline
 import dev.yeseong0412.authtemplate.domain.chat.service.ChatRoomService
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
@@ -66,10 +67,10 @@ class ChatRoomController(
     fun sendMessage(
         @Header("Authorization") token: String,
         @PathVariable roomId: String,
-        message: String
+        message: ChatMessage
     ): ChatOnline {
         val username = jwtUtils.getUsername(token)
-        val toMessage = ChatOnline(writer = username, message = message)
+        val toMessage = ChatOnline(writer = username, message = message.message)
 
         println(roomId)
         println(message)
