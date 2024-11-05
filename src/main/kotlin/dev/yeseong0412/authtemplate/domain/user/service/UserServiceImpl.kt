@@ -140,8 +140,8 @@ class UserServiceImpl(
         return friends.map { UserInfo(email = it.email, name = it.name) }
     }
 
-    override fun searchUserByEmail(userEmail: String): List<UserEntity> {
+    override fun searchUserByEmail(userEmail: String): List<UserInfo> {
         val searchUser : List<UserEntity> = userRepository.findAllByEmail(userEmail)
-        return searchUser
+        return searchUser.map { UserInfo(email = it.email, name = it.name) }
     }
 }
