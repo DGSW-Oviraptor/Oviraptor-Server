@@ -2,7 +2,6 @@ package dev.yeseong0412.authtemplate.domain.chat.presentation
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomIdInfo
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
-import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatMessage
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatOnline
 import dev.yeseong0412.authtemplate.domain.chat.service.ChatRoomService
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
@@ -43,7 +42,6 @@ class ChatRoomController(
         return chatRoomService.deleteRoom(roomId)
     }
 
-    // 채팅방 입장
     @MessageMapping("/enter/{roomId}")
     @SendTo("/topic/room/{roomId}")
     fun enterRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): ChatOnline {
@@ -54,7 +52,6 @@ class ChatRoomController(
 
     }
 
-    // 채팅방 퇴장
     @MessageMapping("/exit/{roomId}")
     @SendTo("/topic/room/{roomId}")
     fun exitRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): ChatOnline {
@@ -64,25 +61,20 @@ class ChatRoomController(
         return ChatOnline(writer = "시스템", message = chatRoomService.exitRoom(roomId, userId))
     }
 
-//    @MessageMapping("/chat/{roomId}")
-//    @SendTo("/topic/room/{roomId}")
-//    fun sendMessage(@PathVariable roomId: String, token : String, message : String): ChatOnline {
-//        val toMessage = ChatOnline(writer = jwtUtils.getUsername(token), message = message)
-//        return toMessage
-//    }
-
     @MessageMapping("/chat/{roomId}")
     @SendTo("/topic/room/{roomId}")
     fun sendMessage(
-        @Header("Authorization") token: String, // 헤더 이름 변경
+        @Header("Authorization") token: String,
         @PathVariable roomId: String,
-        message: ChatMessage
+        message: String
     ): ChatOnline {
         val username = jwtUtils.getUsername(token)
-        val toMessage = ChatOnline(writer = username, message = message.message)
+        val toMessage = ChatOnline(writer = username, message = message)
+
         println(roomId)
-        println(message.message)
-        println("writer : ${username}")
+        println(message)
+        println("writer : $username")
+
         return toMessage
     }
 }
