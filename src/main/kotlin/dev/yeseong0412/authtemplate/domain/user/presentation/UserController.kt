@@ -1,6 +1,7 @@
 package dev.yeseong0412.authtemplate.domain.user.presentation
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.ChangeInfoRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.LoginRequest
@@ -11,6 +12,7 @@ import dev.yeseong0412.authtemplate.global.auth.jwt.JwtInfo
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
 import io.swagger.v3.oas.annotations.Operation
+import org.springframework.data.jpa.repository.Query
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -66,4 +68,12 @@ class UserController(
     fun getAllFriends(@GetAuthenticatedId userId: Long): List<UserInfo> {
         return userService.getAllFriends(userId)
     }
+
+    @Operation(summary = "이메일로 검색")
+    @GetMapping("/search")
+    fun getAllFriends(@RequestParam userEmail : String): List<UserEntity> {
+        return userService.searchUserByEmail(userEmail)
+    }
+
+
 }
