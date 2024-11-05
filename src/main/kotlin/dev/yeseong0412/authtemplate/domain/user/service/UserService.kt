@@ -19,6 +19,5 @@ interface UserService {
     fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserInfo>
     fun addFriend(userId: Long, userEmail: String): BaseResponse<UserInfo>
     fun getAllFriends(userId: Long): List<UserInfo>
-
-    fun searchUserByEmail(userEmail: String) : List<UserInfo>
+    fun searchByUserName(userName: String) : List<UserInfo>
 }
