@@ -17,5 +17,4 @@ class SpringConfig {
     fun objectMapper(): ObjectMapper {
         return ObjectMapper()
     }
-
 }

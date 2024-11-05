@@ -122,6 +122,10 @@ class UserServiceImpl(
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val friend = userRepository.findByEmail(userEmail)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 
+        if (user == friend) {
+            throw CustomException(UserErrorCode.CANNOT_ADD_FRIEND)
+        }
+
         user.friends.add(friend)
         friend.friends.add(user)
         userRepository.save(user)

@@ -26,7 +26,7 @@ class UserEntity(
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "friend_id")]
     )
-    val friends: MutableList<UserEntity> = mutableListOf(),
+    val friends: MutableSet<UserEntity> = mutableSetOf(),
 
     @ManyToMany
     @JoinTable(
