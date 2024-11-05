@@ -96,7 +96,7 @@ class UserServiceImpl(
     }
 
     override fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserInfo> {
-        val user = userRepository.findById(userId).orElseThrow()
+        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         if (userRepository.existsByEmail(changeInfoRequest.email) && user.email != changeInfoRequest.email) throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
 
         if (changeInfoRequest.email != "") {
@@ -118,10 +118,10 @@ class UserServiceImpl(
     }
 
     override fun addFriend(userId: Long, userEmail: String): BaseResponse<UserInfo> {
-        val user = userRepository.findById(userId).orElseThrow()
-        val friend = userRepository.findByEmail(userEmail)
+        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
+        val friend = userRepository.findByEmail(userEmail)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 
-        user.friends.add(friend!!)
+        user.friends.add(friend)
         friend.friends.add(user)
         userRepository.save(user)
         userRepository.save(friend)
@@ -133,7 +133,7 @@ class UserServiceImpl(
     }
 
     override fun getAllFriends(userId: Long): List<UserInfo> {
-        val user = userRepository.findById(userId).orElseThrow()
+        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val friends = user.friends
 
         return friends.map { UserInfo(email = it.email, name = it.name) }

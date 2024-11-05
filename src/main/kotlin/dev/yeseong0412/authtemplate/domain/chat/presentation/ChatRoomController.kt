@@ -48,6 +48,7 @@ class ChatRoomController(
     fun enterRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): String {
         println(roomId)
         println("enter")
+
         return chatRoomService.enterRoom(roomId, userId)
     }
 
@@ -57,6 +58,7 @@ class ChatRoomController(
     fun exitRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): String {
         println(roomId)
         println("exit")
+
         return chatRoomService.exitRoom(roomId, userId)
     }
 
@@ -70,12 +72,13 @@ class ChatRoomController(
     @MessageMapping("/chat/{roomId}")
     @SendTo("/topic/room/{roomId}")
     fun sendMessage(@PathVariable roomId: String, message: ChatMessage): ChatOnline {
-        // JWT 토큰을 추출하여 사용자 이름을 얻습니다.
-        val username = jwtUtils.getUsername(message.token) // message.token에 공백이 포함되지 않도록 확인하세요
+        val username = jwtUtils.getUsername(message.token)
         val toMessage = ChatOnline(writer = username, message = message.message)
+
         println(roomId)
         println(message.message)
         println(message.token)
+
         return toMessage
     }
 }
