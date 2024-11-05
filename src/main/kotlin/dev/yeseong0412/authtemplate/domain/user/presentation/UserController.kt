@@ -71,7 +71,7 @@ class UserController(
 
     @Operation(summary = "이메일로 검색")
     @GetMapping("/search")
-    fun getAllFriends(@RequestParam userEmail : String): List<UserEntity> {
+    fun getAllFriends(userEmail : String): List<UserEntity> {
         return userService.searchUserByEmail(userEmail)
     }
 
