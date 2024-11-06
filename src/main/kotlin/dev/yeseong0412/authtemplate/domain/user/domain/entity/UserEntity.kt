@@ -9,7 +9,7 @@ class UserEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long, // ID (PK)
+    val id: Long? = null, // ID (PK)
 
     @Column(nullable = false)
     var email: String, // Email
