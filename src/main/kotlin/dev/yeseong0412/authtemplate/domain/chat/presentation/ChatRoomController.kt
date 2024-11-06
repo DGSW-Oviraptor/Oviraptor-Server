@@ -23,7 +23,7 @@ class ChatRoomController(
 
     @Operation(summary = "방 목록")
     @GetMapping("/rooms")
-    fun getAllRooms(): List<ChatRoomIdInfo> = chatRoomService.getAllRooms()
+    fun getAllRooms(): BaseResponse<List<ChatRoomIdInfo>> = chatRoomService.getAllRooms()
 
     @Operation(summary = "방 생성")
     @PostMapping("/create")

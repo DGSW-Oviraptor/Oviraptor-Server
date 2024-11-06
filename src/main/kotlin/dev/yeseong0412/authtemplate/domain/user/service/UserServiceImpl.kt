@@ -75,11 +75,14 @@ class UserServiceImpl(
         )
     }
 
-    override fun getAllRooms(userId: Long): List<ChatRoomInfo> {
+    override fun getAllRooms(userId: Long): BaseResponse<List<ChatRoomInfo>> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val rooms = user.rooms
 
-        return rooms.map { ChatRoomInfo(name = it.name, participants = it.participants.map { pr -> pr.name}) }
+        return BaseResponse(
+            message = "success",
+            data = rooms.map { ChatRoomInfo(name = it.name, participants = it.participants.map { pr -> pr.name}) }
+        )
     }
 
     override fun getUserInfo(userId: Long): BaseResponse<UserInfo> {
@@ -133,15 +136,21 @@ class UserServiceImpl(
         )
     }
 
-    override fun getAllFriends(userId: Long): List<UserInfo> {
+    override fun getAllFriends(userId: Long): BaseResponse<List<UserInfo>> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val friends = user.friends
 
-        return friends.map { UserInfo(email = it.email, name = it.name) }
+        return BaseResponse(
+            message = "success",
+            data = friends.map { UserInfo(email = it.email, name = it.name) }
+        )
     }
 
-    override fun searchByUserName(userName: String): List<UserInfo> {
+    override fun searchByUserName(userName: String): BaseResponse<List<UserInfo>> {
         val user = userRepository.findAllByNameContaining(userName)
-        return user.map { UserInfo(email = it.email, name = it.name) }
+        return BaseResponse(
+            message = "success",
+            data = user.map { UserInfo(email = it.email, name = it.name) }
+        )
     }
 }

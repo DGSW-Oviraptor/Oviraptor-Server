@@ -10,10 +10,10 @@ interface UserService {
     fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit>
     fun loginUser(loginRequest: LoginRequest): BaseResponse<JwtInfo>
     fun refreshToken(refreshRequest: RefreshRequest): BaseResponse<String>
-    fun getAllRooms(userId: Long): List<ChatRoomInfo>
+    fun getAllRooms(userId: Long): BaseResponse<List<ChatRoomInfo>>
     fun getUserInfo(userId: Long): BaseResponse<UserInfo>
     fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserInfo>
     fun addFriend(userId: Long, friendRequest: FriendRequest): BaseResponse<UserInfo>
-    fun getAllFriends(userId: Long): List<UserInfo>
-    fun searchByUserName(userName: String) : List<UserInfo>
+    fun getAllFriends(userId: Long): BaseResponse<List<UserInfo>>
+    fun searchByUserName(userName: String) : BaseResponse<List<UserInfo>>
 }

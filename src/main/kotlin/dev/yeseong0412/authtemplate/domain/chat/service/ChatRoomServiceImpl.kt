@@ -20,9 +20,12 @@ class ChatRoomServiceImpl(
     private val userRepository: UserRepository,
     val jwtUtils: JwtUtils
 ) : ChatRoomService {
-    override fun getAllRooms(): List<ChatRoomIdInfo> {
+    override fun getAllRooms(): BaseResponse<List<ChatRoomIdInfo>> {
         val rooms = chatRoomRepository.findAll()
-        return rooms.map { ChatRoomIdInfo(it.id, it.name, it.participants.map { pr -> pr.name }) }
+        return BaseResponse(
+            message = "success",
+            data = rooms.map { ChatRoomIdInfo(it.id, it.name, it.participants.map { pr -> pr.name }) }
+        )
     }
 
 

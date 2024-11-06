@@ -4,7 +4,6 @@ import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*
 import dev.yeseong0412.authtemplate.domain.user.service.UserService
-import dev.yeseong0412.authtemplate.global.auth.jwt.JwtInfo
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
 import io.swagger.v3.oas.annotations.Operation
@@ -18,7 +17,7 @@ class UserController(
 
     @Operation(summary = "내 방")
     @GetMapping("/rooms")
-    fun getAllRooms(@GetAuthenticatedId userId: Long): List<ChatRoomInfo> {
+    fun getAllRooms(@GetAuthenticatedId userId: Long): BaseResponse<List<ChatRoomInfo>> {
         return userService.getAllRooms(userId)
     }
 
@@ -42,13 +41,13 @@ class UserController(
 
     @Operation(summary = "친구목록")
     @GetMapping("/friends")
-    fun getAllFriends(@GetAuthenticatedId userId: Long): List<UserInfo> {
+    fun getAllFriends(@GetAuthenticatedId userId: Long): BaseResponse<List<UserInfo>> {
         return userService.getAllFriends(userId)
     }
 
     @Operation(summary = "이름 검색")
     @GetMapping("/search")
-    fun getAllFriends(userName : String): List<UserInfo> {
+    fun getAllFriends(userName : String): BaseResponse<List<UserInfo>> {
         return userService.searchByUserName(userName)
     }
 }

@@ -7,12 +7,11 @@ import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatOnline
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 
 interface ChatRoomService {
-    fun getAllRooms(): List<ChatRoomIdInfo>
+    fun getAllRooms(): BaseResponse<List<ChatRoomIdInfo>>
     fun createRoom(name: String, userId: Long): BaseResponse<ChatRoomInfo>
     fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoomInfo>
     fun deleteRoom(roomId: Long): BaseResponse<Unit>
     fun enterRoom(roomId: Long, userId: Long): ChatOnline
     fun exitRoom(roomId: Long, userId: Long): ChatOnline
-
     fun sendChat(token : String, message: ChatMessage) : ChatOnline
 }
