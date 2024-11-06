@@ -1,11 +1,11 @@
 package dev.yeseong0412.authtemplate.domain.chat.presentation
 
+import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatMessageEntity
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomIdInfo
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatMessage
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatOnline
 import dev.yeseong0412.authtemplate.domain.chat.service.ChatRoomService
-import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
 import io.swagger.v3.oas.annotations.Operation
@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/chat")
 class ChatRoomController(
-    val chatRoomService: ChatRoomService,
-    val jwtUtils: JwtUtils
+    val chatRoomService: ChatRoomService
 ) {
 
     @Operation(summary = "방 목록")
@@ -51,6 +50,11 @@ class ChatRoomController(
         return chatRoomService.enterRoom(roomId = roomId, userId = userId)
     }
 
+    @MessageMapping("/rooms/{roomId}")
+    fun getAllMessages(@PathVariable roomId: Long): BaseResponse<List<ChatMessageEntity>> {
+        return chatRoomService.getAllMessages(roomId)
+    }
+
     @MessageMapping("/exit/{roomId}")
     @SendTo("/topic/room/{roomId}")
     fun exitRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): ChatOnline {
@@ -63,9 +67,9 @@ class ChatRoomController(
     @SendTo("/topic/room/{roomId}")
     fun sendMessage(
         @Header("Authorization") token: String,
-        @PathVariable roomId: String,
+        @PathVariable roomId: Long,
         message: ChatMessage
     ): ChatOnline {
-        return chatRoomService.sendChat(token = token, message = message)
+        return chatRoomService.sendChat(roomId = roomId, token = token, message = message)
     }
 }
