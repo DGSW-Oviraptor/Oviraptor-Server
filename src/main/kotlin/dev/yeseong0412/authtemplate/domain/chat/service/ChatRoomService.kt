@@ -1,6 +1,5 @@
 package dev.yeseong0412.authtemplate.domain.chat.service
 
-import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatMessageEntity
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomIdInfo
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatMessage
