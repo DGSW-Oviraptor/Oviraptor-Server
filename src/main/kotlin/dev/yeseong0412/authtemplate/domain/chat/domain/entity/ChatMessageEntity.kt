@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "chat")
 class ChatMessageEntity(
     @Id
-    val id: ObjectId,
+    val id: ObjectId? = null,
     var roomId: Long,
     var writerId: Long,
     var content: String

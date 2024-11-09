@@ -50,10 +50,10 @@ class ChatRoomController(
         return chatRoomService.enterRoom(roomId = roomId, userId = userId)
     }
 
-//    @MessageMapping("/{roomId}")
-//    fun getAllMessages(@PathVariable roomId: Long): BaseResponse<List<ChatMessageEntity>> {
-//        return chatRoomService.getAllMessages(roomId)
-//    }
+    @GetMapping("/chat/room/{roomId}")
+    fun getAllMessages(@PathVariable roomId: Long): BaseResponse<List<ChatMessageEntity>> {
+        return chatRoomService.getAllMessages(roomId)
+    }
 
     @MessageMapping("/exit/{roomId}")
     @SendTo("/topic/room/{roomId}")
