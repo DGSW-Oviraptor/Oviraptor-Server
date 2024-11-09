@@ -1,5 +1,6 @@
 package dev.yeseong0412.authtemplate.domain.chat.presentation
 
+import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatMessageEntity
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomIdInfo
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatMessage
@@ -49,10 +50,10 @@ class ChatRoomController(
         return chatRoomService.enterRoom(roomId = roomId, userId = userId)
     }
 
-//    @MessageMapping("/{roomId}")
-//    fun getAllMessages(@PathVariable roomId: Long): BaseResponse<List<ChatMessageEntity>> {
-//        return chatRoomService.getAllMessages(roomId)
-//    }
+    @MessageMapping("/{roomId}")
+    fun getAllMessages(@PathVariable roomId: Long): BaseResponse<List<ChatMessageEntity>> {
+        return chatRoomService.getAllMessages(roomId)
+    }
 
     @MessageMapping("/exit/{roomId}")
     @SendTo("/topic/room/{roomId}")

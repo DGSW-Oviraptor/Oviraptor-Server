@@ -99,10 +99,10 @@ class ChatRoomServiceImpl(
         return ChatOnline(writer = user.name, message = message.message)
     }
 
-//    override fun getAllMessages(roomId: Long): BaseResponse<List<ChatMessageEntity>> {
-//        return BaseResponse(
-//            message = "success",
-//            data = chatMessageRepository.findAllByRoomId(roomId)
-//        )
-//    }
+    override fun getAllMessages(roomId: Long): BaseResponse<List<ChatMessageEntity>> {
+        return BaseResponse(
+            message = "success",
+            data = chatMessageRepository.findAllByRoomId(roomId)
+        )
+    }
 }

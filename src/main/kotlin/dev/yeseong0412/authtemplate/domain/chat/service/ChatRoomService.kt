@@ -1,5 +1,6 @@
 package dev.yeseong0412.authtemplate.domain.chat.service
 
+import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatMessageEntity
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomIdInfo
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatMessage
@@ -14,5 +15,5 @@ interface ChatRoomService {
     fun enterRoom(roomId: Long, userId: Long): ChatOnline
     fun exitRoom(roomId: Long, userId: Long): ChatOnline
     fun sendChat(roomId: Long, token : String, message: ChatMessage) : ChatOnline
-//    fun getAllMessages(roomId: Long): BaseResponse<List<ChatMessageEntity>>
+    fun getAllMessages(roomId: Long): BaseResponse<List<ChatMessageEntity>>
 }
