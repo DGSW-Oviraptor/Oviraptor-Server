@@ -1,51 +1,88 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.user.domain.entity.MailEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
+import dev.yeseong0412.authtemplate.domain.user.domain.repository.MailRepository
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*
+import dev.yeseong0412.authtemplate.domain.user.presentation.dto.response.SendMailResponse
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtInfo
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
+import dev.yeseong0412.authtemplate.global.auth.jwt.MailUtility
 import dev.yeseong0412.authtemplate.global.auth.jwt.exception.JwtErrorCode
 import dev.yeseong0412.authtemplate.global.auth.jwt.exception.type.JwtErrorType
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
+<<<<<<< HEAD
 import org.springframework.data.repository.findByIdOrNull
+=======
+import org.springframework.mail.javamail.JavaMailSender
+>>>>>>> feature/email
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserServiceImpl(
+    private val javaMailSender: JavaMailSender,
     private val userRepository: UserRepository,
     private val userMapper: UserMapper,
+    private val mailRepository: MailRepository,
     private val bytePasswordEncoder: BCryptPasswordEncoder,
-    private val jwtUtils: JwtUtils
+    private val jwtUtils: JwtUtils,
+    private val mailUtils: MailUtility
 ) : UserService {
 
     @Transactional
     override fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit> {
-        if (userRepository.existsByEmail(registerUserRequest.email)) throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
 
+        // 이메일에 해당하는 모든 인증 기록을 최신순으로 가져오기
+        val mailEntities = mailRepository.findAllByEmail(registerUserRequest.email)
+        if (mailEntities.isEmpty()) throw CustomException(UserErrorCode.USER_NOT_FOUND)
+
+        // 가장 최신 인증 코드만 사용
+        val latestMailEntity = mailEntities.maxByOrNull { it.id!! }  // createdDate를 기준으로 최신 데이터 선택
+
+        // 인증 코드 일치 확인
+        if (latestMailEntity?.authcode != registerUserRequest.authCode) {
+            return BaseResponse(message = "잘못된 인증 코드입니다.")
+        }
+
+        // 인증 코드 삭제
+        mailRepository.deleteByEmail(registerUserRequest.email)
+
+        // 이메일 중복 확인
+        if (userRepository.existsByEmail(registerUserRequest.email)) {
+            throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
+        }
+
+        // 회원가입 처리
         userRepository.save(
             userMapper.toEntity(
-                userMapper.toDomain(registerUserRequest, bytePasswordEncoder.encode(registerUserRequest.password.trim()))
+                userMapper.toDomain(
+                    registerUserRequest,
+                    bytePasswordEncoder.encode(registerUserRequest.password.trim())
+                )
             )
         )
 
-        return BaseResponse(
-            message = "회원가입 성공"
-        )
-
+        return BaseResponse(message = "회원가입 성공")
     }
+
+
 
     @Transactional(readOnly = true)
     override fun loginUser(loginRequest: LoginRequest): BaseResponse<JwtInfo> {
-        val user = userRepository.findByEmail(loginRequest.email)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
+        val user = userRepository.findByEmail(loginRequest.email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 
-        if (bytePasswordEncoder.matches(user.password, loginRequest.password)) throw CustomException(UserErrorCode.USER_NOT_MATCH)
+        if (bytePasswordEncoder.matches(
+                user.password,
+                loginRequest.password
+            )
+        ) throw CustomException(UserErrorCode.USER_NOT_MATCH)
 
         return BaseResponse(
             message = "로그인 성공",
@@ -68,7 +105,7 @@ class UserServiceImpl(
             jwtUtils.getUsername(token)
         )
 
-        return BaseResponse (
+        return BaseResponse(
             message = "리프레시 성공 !",
             data = jwtUtils.refreshToken(
                 user = userMapper.toDomain(user!!)
@@ -82,7 +119,7 @@ class UserServiceImpl(
 
         return BaseResponse(
             message = "success",
-            data = rooms.map { ChatRoomInfo(name = it.name, participants = it.participants.map { pr -> pr.name}) }
+            data = rooms.map { ChatRoomInfo(name = it.name, participants = it.participants.map { pr -> pr.name }) }
         )
     }
 
@@ -98,7 +135,9 @@ class UserServiceImpl(
 
     override fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserInfo> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
-        if (userRepository.existsByEmail(changeInfoRequest.email) && user.email != changeInfoRequest.email) throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
+        if (userRepository.existsByEmail(changeInfoRequest.email) && user.email != changeInfoRequest.email) throw CustomException(
+            UserErrorCode.USER_ALREADY_EXIST
+        )
 
         if (changeInfoRequest.email != "") {
             user.email = changeInfoRequest.email
@@ -119,8 +158,14 @@ class UserServiceImpl(
     }
 
     override fun addFriend(userId: Long, friendRequest: FriendRequest): BaseResponse<UserInfo> {
+<<<<<<< HEAD
         val user = userRepository.findByIdOrNull(userId) ?: throw  CustomException(UserErrorCode.USER_NOT_FOUND)
         val friend = userRepository.findByEmail(friendRequest.email)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
+=======
+        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
+        val friend =
+            userRepository.findByEmail(friendRequest.email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
+>>>>>>> feature/email
 
         if (user == friend || user.friends.contains(friend)) {
             throw CustomException(UserErrorCode.CANNOT_ADD_FRIEND)
@@ -154,4 +199,28 @@ class UserServiceImpl(
             data = user.map { UserInfo(email = it.email, name = it.name) }
         )
     }
+
+
+    override fun sendMail(email: String): SendMailResponse {
+
+        if(!isValidEmail(email))  (return SendMailResponse(message = "잘못된 이메일 주소입니다."))
+        val randomString = mailUtils.sendMail(email)
+
+        mailRepository.save(
+            MailEntity(
+                email = email,
+                authcode = randomString
+            )
+        )
+
+        return SendMailResponse(message = "메일 발송 완료")
+
+    }
+
+    fun isValidEmail(email: String): Boolean {
+        val regex = "^[A-Za-z0-9+_.-]+@(.+)$".toRegex() // 이메일 형식 검증
+        return email.matches(regex)
+    }
+
+
 }

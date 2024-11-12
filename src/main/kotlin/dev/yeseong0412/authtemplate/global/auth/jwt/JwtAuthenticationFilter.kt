@@ -28,11 +28,16 @@ class JwtAuthenticationFilter(
             return
         }
 
+<<<<<<< HEAD
         if (path.startsWith("/auth")
+=======
+        if (path.startsWith("/user/login") || path.startsWith("/user/register") || path.startsWith("/user/email")
+>>>>>>> feature/email
         ) {
             filterChain.doFilter(request, response)
             return
         }
+
 
         if (path.startsWith("/ws")
         ) {
