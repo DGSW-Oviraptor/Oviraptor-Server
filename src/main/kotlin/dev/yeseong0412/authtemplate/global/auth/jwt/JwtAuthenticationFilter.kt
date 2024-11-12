@@ -34,7 +34,6 @@ class JwtAuthenticationFilter(
             return
         }
 
-
         if (path.startsWith("/ws")
         ) {
             filterChain.doFilter(request, response)

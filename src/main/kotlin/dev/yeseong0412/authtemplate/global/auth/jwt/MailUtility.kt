@@ -8,13 +8,12 @@ import java.util.*
 
 @Component
 class MailUtility(
-    val javaMailSender: JavaMailSender,
-    val mailRepository: MailRepository,
+    val javaMailSender: JavaMailSender
 ) {
 
     fun getRandomString(length: Int): String {
-        val UUID = UUID.randomUUID().toString()
-        return UUID.substring(0, length)
+        val randomUUID = UUID.randomUUID().toString()
+        return randomUUID.substring(0, length)
     }
 
     fun sendMail(email: String): String {
@@ -29,7 +28,6 @@ class MailUtility(
         helper.setText("인증 코드 : $randomString")
         helper.setFrom("{email}")
         javaMailSender.send(message)
-
 
         return randomString
 

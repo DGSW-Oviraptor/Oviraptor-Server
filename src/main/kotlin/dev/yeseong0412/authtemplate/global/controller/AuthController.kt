@@ -32,7 +32,6 @@ class AuthController(
         return userService.loginUser(loginRequest)
     }
 
-
     @Operation(summary = "토큰 리프레시")
     @PostMapping("/refresh")
     fun refreshUser(@RequestBody refreshRequest: RefreshRequest): BaseResponse<String> {
