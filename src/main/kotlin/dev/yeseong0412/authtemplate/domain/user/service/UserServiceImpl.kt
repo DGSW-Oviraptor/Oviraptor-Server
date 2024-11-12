@@ -119,7 +119,7 @@ class UserServiceImpl(
     }
 
     override fun addFriend(userId: Long, friendRequest: FriendRequest): BaseResponse<UserInfo> {
-        val user = userRepository.findByIdOrNull(userId) ?: throw  CustomException(UserErrorCode.USER_NOT_FOUND)
+        val user = userRepository.findByIdOrNull(userId)?: throw  CustomException(UserErrorCode.USER_NOT_FOUND)
         val friend = userRepository.findByEmail(friendRequest.email)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 
         if (user == friend || user.friends.contains(friend)) {
