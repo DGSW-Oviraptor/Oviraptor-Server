@@ -1,5 +1,7 @@
 package dev.yeseong0412.authtemplate.domain.user.presentation.dto.request
 
-data class FriendRequest(
+import com.fasterxml.jackson.annotation.JsonCreator
+
+data class FriendRequest @JsonCreator constructor(
     val email: String
 )

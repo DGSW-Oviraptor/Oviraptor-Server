@@ -12,6 +12,7 @@ import dev.yeseong0412.authtemplate.global.auth.jwt.exception.JwtErrorCode
 import dev.yeseong0412.authtemplate.global.auth.jwt.exception.type.JwtErrorType
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -118,7 +119,7 @@ class UserServiceImpl(
     }
 
     override fun addFriend(userId: Long, friendRequest: FriendRequest): BaseResponse<UserInfo> {
-        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
+        val user = userRepository.findByIdOrNull(userId) ?: throw  CustomException(UserErrorCode.USER_NOT_FOUND)
         val friend = userRepository.findByEmail(friendRequest.email)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 
         if (user == friend || user.friends.contains(friend)) {
