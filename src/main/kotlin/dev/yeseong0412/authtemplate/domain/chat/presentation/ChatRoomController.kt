@@ -50,7 +50,7 @@ class ChatRoomController(
         return chatRoomService.enterRoom(roomId = roomId, userId = userId)
     }
 
-    @GetMapping("/chat/room/{roomId}")
+    @GetMapping("/room/{roomId}")
     fun getAllMessages(@PathVariable roomId: Long): BaseResponse<List<ChatMessageEntity>> {
         return chatRoomService.getAllMessages(roomId)
     }
