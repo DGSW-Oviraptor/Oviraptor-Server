@@ -43,6 +43,12 @@ class ChatRoomController(
         return chatRoomService.deleteRoom(roomId)
     }
 
+    @Operation(summary = "방 정보")
+    @GetMapping("/info/{roomId}")
+    fun getRoomInfo(@PathVariable roomId: Long): BaseResponse<ChatRoomInfo> {
+        return chatRoomService.getRoomInfo(roomId)
+    }
+
     @MessageMapping("/enter/{roomId}")
     @SendTo("/topic/room/{roomId}")
     fun enterRoom(@DestinationVariable roomId: Long, @GetAuthenticatedId userId: Long): ChatOnline {

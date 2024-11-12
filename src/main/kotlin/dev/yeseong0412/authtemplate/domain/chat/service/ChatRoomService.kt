@@ -12,6 +12,7 @@ interface ChatRoomService {
     fun createRoom(name: String, userId: Long): BaseResponse<ChatRoomInfo>
     fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoomInfo>
     fun deleteRoom(roomId: Long): BaseResponse<Unit>
+    fun getRoomInfo(roomId: Long): BaseResponse<ChatRoomInfo>
     fun enterRoom(roomId: Long, userId: Long): ChatOnline
     fun exitRoom(roomId: Long, userId: Long): ChatOnline
     fun sendChat(roomId: Long, token : String, message: ChatMessage) : ChatOnline

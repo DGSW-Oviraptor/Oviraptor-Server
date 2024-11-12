@@ -47,7 +47,7 @@ class SecurityConfig (
             .authorizeHttpRequests {
                 it
                     .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                    .requestMatchers("/user/login", "/user/refresh", "user/register").permitAll()
+                    .requestMatchers("/user/login", "user/register").permitAll()
                     .requestMatchers("/ws-info/**").permitAll()
                     .requestMatchers("/ws/**","/stomp/chat/**").permitAll()
                     .anyRequest().authenticated()

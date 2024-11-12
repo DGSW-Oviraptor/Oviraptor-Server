@@ -75,6 +75,15 @@ class ChatRoomServiceImpl(
         )
     }
 
+    override fun getRoomInfo(roomId: Long): BaseResponse<ChatRoomInfo> {
+        val roomInfo = chatRoomRepository.findById(roomId).map { ChatRoomInfo(name = it.name, participants = it.participants.map { pr -> pr.name }) }.orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
+
+        return BaseResponse(
+            message = "success",
+            data = roomInfo
+        )
+    }
+
     override fun enterRoom(roomId: Long, userId: Long): ChatOnline {
         val room = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
