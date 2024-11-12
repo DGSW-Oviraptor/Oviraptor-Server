@@ -6,6 +6,7 @@ import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatMessage
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatOnline
 import dev.yeseong0412.authtemplate.domain.chat.service.ChatRoomService
+import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
 import io.swagger.v3.oas.annotations.Operation
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/chat")
 class ChatRoomController(
-    val chatRoomService: ChatRoomService
+    val chatRoomService: ChatRoomService,
+    private val jwtUtils: JwtUtils
 ) {
 
     @Operation(summary = "방 목록")
@@ -71,6 +73,8 @@ class ChatRoomController(
         @Header("Authorization") token: String,
         message: ChatMessage
     ): ChatOnline {
+        println(roomId)
+        println(jwtUtils.getUsername(token))
         return chatRoomService.sendChat(roomId = roomId, token = token, message = message)
     }
 }
