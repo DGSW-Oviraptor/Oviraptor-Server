@@ -111,7 +111,7 @@ class ChatRoomServiceImpl(
 
     override fun getAllMessages(roomId: Long, userId: Long): BaseResponse<List<ChatMessageInfo>> {
         val room = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
-        val messages = chatMessageRepository.findAllByRoomId(roomId).map { ChatMessageInfo(room = room.name, writer = userRepository.findById(it.writerId).orElseThrow().name, content = it.content, isMine = it.writerId == userId) }
+        val messages = chatMessageRepository.findAllByRoomId(roomId).map { ChatMessageInfo(id = it.id, room = room.name, writer = userRepository.findById(it.writerId).orElseThrow().name, content = it.content, isMine = it.writerId == userId) }
 
         return BaseResponse(
             message = "success",
