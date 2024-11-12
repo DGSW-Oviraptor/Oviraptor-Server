@@ -147,8 +147,8 @@ class UserServiceImpl(
         )
     }
 
-    override fun searchByUserName(userName: String): BaseResponse<List<UserInfo>> {
-        val user = userRepository.findAllByNameContaining(userName)
+    override fun searchByUsername(username: String): BaseResponse<List<UserInfo>> {
+        val user = userRepository.findAllByNameContaining(username)
         return BaseResponse(
             message = "success",
             data = user.map { UserInfo(email = it.email, name = it.name) }

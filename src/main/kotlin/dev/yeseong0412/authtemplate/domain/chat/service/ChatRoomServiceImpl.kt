@@ -3,6 +3,7 @@ package dev.yeseong0412.authtemplate.domain.chat.service
 import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatMessageEntity
 import dev.yeseong0412.authtemplate.domain.chat.domain.repository.ChatRoomRepository
 import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatRoomEntity
+import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatMessageInfo
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomIdInfo
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.domain.repository.ChatMessageRepository
@@ -99,10 +100,13 @@ class ChatRoomServiceImpl(
         return ChatOnline(writer = user.name, message = message.message)
     }
 
-    override fun getAllMessages(roomId: Long): BaseResponse<List<ChatMessageEntity>> {
+    override fun getAllMessages(roomId: Long, userId: Long): BaseResponse<List<ChatMessageInfo>> {
+        val room = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val messages = chatMessageRepository.findAllByRoomId(roomId).map { ChatMessageInfo(room = room.name, writer = userRepository.findById(it.writerId).orElseThrow().name, content = it.content, isMine = it.writerId == userId) }
+
         return BaseResponse(
             message = "success",
-            data = chatMessageRepository.findAllByRoomId(roomId)
+            data = messages
         )
     }
 }

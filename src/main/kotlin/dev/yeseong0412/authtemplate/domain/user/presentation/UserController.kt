@@ -47,7 +47,7 @@ class UserController(
 
     @Operation(summary = "이름 검색")
     @GetMapping("/search")
-    fun getAllFriends(userName : String): BaseResponse<List<UserInfo>> {
-        return userService.searchByUserName(userName)
+    fun getAllFriends(username : String): BaseResponse<List<UserInfo>> {
+        return userService.searchByUsername(username)
     }
 }

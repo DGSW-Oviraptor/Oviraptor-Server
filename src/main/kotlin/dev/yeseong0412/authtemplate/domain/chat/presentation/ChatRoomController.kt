@@ -1,12 +1,11 @@
 package dev.yeseong0412.authtemplate.domain.chat.presentation
 
-import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatMessageEntity
+import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatMessageInfo
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomIdInfo
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatMessage
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatOnline
 import dev.yeseong0412.authtemplate.domain.chat.service.ChatRoomService
-import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
 import io.swagger.v3.oas.annotations.Operation
@@ -19,8 +18,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/chat")
 class ChatRoomController(
-    val chatRoomService: ChatRoomService,
-    private val jwtUtils: JwtUtils
+    val chatRoomService: ChatRoomService
 ) {
 
     @Operation(summary = "방 목록")
@@ -53,9 +51,10 @@ class ChatRoomController(
         return chatRoomService.enterRoom(roomId = roomId, userId = userId)
     }
 
+    @Operation(summary = "채팅 불러오기")
     @GetMapping("/{roomId}")
-    fun getAllMessages(@PathVariable roomId: Long): BaseResponse<List<ChatMessageEntity>> {
-        return chatRoomService.getAllMessages(roomId)
+    fun getAllMessages(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): BaseResponse<List<ChatMessageInfo>> {
+        return chatRoomService.getAllMessages(roomId, userId)
     }
 
     @MessageMapping("/exit/{roomId}")
@@ -73,8 +72,6 @@ class ChatRoomController(
         @Header("Authorization") token: String,
         message: ChatMessage
     ): ChatOnline {
-        println(roomId)
-        println(jwtUtils.getUsername(token))
         return chatRoomService.sendChat(roomId = roomId, token = token, message = message)
     }
 }
