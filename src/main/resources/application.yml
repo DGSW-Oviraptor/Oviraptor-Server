@@ -1,0 +1,59 @@
+server:
+  port: 8080
+
+# MySQL Info 본인 MySQL로 수정
+spring:
+  datasource:
+    url: ${MYSQL_HOST}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    mongodb:
+      uri: ${MONGODB_HOST}
+  # JPA Setting
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show_sql: true
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connection timeout: 5000
+          timeout: 5000
+          write timeout: 5000
+      auth-code-expiration-millis: 1800000
+
+# logging
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            mongodb: debug      # Spring Data MongoDB의 로그를 debug 레벨로 설정
+      mongodb:
+        driver: debug          # MongoDB 드라이버 관련 로그를 debug 레벨로 설정
+#    root: debug
+#JWT Secret Random code (32바이트 길이의 무작위 바이트 문자열을 64자 길이의 16진수 문자열로 인코딩)
+jwt :
+  secret : ${JWT_KEY}
+  expire :
+    #access: 600000 = 2 hour
+    access: ${ACCESS_END}
+    #refresh: 864000000 = 10 day
+    refresh: ${REFRESH_END}

@@ -16,7 +16,7 @@ services:
   mysql:
     image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: Lshdgsw71
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: chatprac
     ports:
       - "3306:3306"
