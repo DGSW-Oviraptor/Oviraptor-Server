@@ -3,14 +3,11 @@ package dev.yeseong0412.authtemplate.global.controller
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.LoginRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RefreshRequest
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.RegisterUserRequest
-import dev.yeseong0412.authtemplate.domain.user.presentation.dto.response.SendMailResponse
 import dev.yeseong0412.authtemplate.domain.user.service.UserService
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtInfo
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -41,8 +38,8 @@ class AuthController(
     @Operation(summary = "이메일")
     @PostMapping("/email")
     fun sendMail(
-        @RequestParam email : BaseResponse<String>
-    ): SendMailResponse {
+        @RequestParam email : String
+    ): BaseResponse<Unit> {
         return userService.sendMail(email)
     }
 }

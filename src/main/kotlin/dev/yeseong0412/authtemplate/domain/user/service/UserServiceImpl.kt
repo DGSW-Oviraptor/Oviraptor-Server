@@ -1,6 +1,7 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.user.exception.EmailErrorCode
 import dev.yeseong0412.authtemplate.domain.user.domain.entity.MailEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
@@ -8,7 +9,6 @@ import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.MailRepository
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*
-import dev.yeseong0412.authtemplate.domain.user.presentation.dto.response.SendMailResponse
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtInfo
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.auth.jwt.MailUtility
@@ -17,14 +17,12 @@ import dev.yeseong0412.authtemplate.global.auth.jwt.exception.type.JwtErrorType
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserServiceImpl(
-    private val javaMailSender: JavaMailSender,
     private val userRepository: UserRepository,
     private val userMapper: UserMapper,
     private val mailRepository: MailRepository,
@@ -68,8 +66,6 @@ class UserServiceImpl(
 
         return BaseResponse(message = "회원가입 성공")
     }
-
-
 
     @Transactional(readOnly = true)
     override fun loginUser(loginRequest: LoginRequest): BaseResponse<JwtInfo> {
@@ -190,10 +186,10 @@ class UserServiceImpl(
         )
     }
 
-    override fun sendMail(email: String): SendMailResponse {
+    override fun sendMail(email: String): BaseResponse<Unit> {
 
         if (!isValidEmail(email)) {
-            return SendMailResponse(message = "잘못된 이메일 주소입니다.")
+            throw CustomException(EmailErrorCode.EMAIL_INVALID)
         }
         val randomString = mailUtils.sendMail(email)
 
@@ -204,7 +200,9 @@ class UserServiceImpl(
             )
         )
 
-        return SendMailResponse(message = "메일 발송 완료")
+        return BaseResponse(
+            message = "success"
+        )
 
     }
 
