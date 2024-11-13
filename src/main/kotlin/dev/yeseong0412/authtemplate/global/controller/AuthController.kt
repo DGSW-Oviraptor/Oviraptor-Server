@@ -41,7 +41,7 @@ class AuthController(
     @Operation(summary = "이메일")
     @PostMapping("/email")
     fun sendMail(
-        @RequestParam email : String
+        @RequestParam email : BaseResponse<String>
     ): SendMailResponse {
         return userService.sendMail(email)
     }

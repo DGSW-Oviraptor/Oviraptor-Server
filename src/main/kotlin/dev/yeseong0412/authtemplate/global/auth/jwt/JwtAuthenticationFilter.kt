@@ -28,7 +28,7 @@ class JwtAuthenticationFilter(
             return
         }
 
-        if (path.startsWith("/user/login") || path.startsWith("/user/register") || path.startsWith("/user/email")
+        if (path.startsWith("/auth")
         ) {
             filterChain.doFilter(request, response)
             return

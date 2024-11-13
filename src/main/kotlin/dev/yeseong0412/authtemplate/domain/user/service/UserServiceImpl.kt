@@ -190,14 +190,11 @@ class UserServiceImpl(
         )
     }
 
-    override fun searchByUserName(userName: String): BaseResponse<List<UserInfo>> {
-        TODO("Not yet implemented")
-    }
-
-
     override fun sendMail(email: String): SendMailResponse {
 
-        if(!isValidEmail(email))  (return SendMailResponse(message = "잘못된 이메일 주소입니다."))
+        if (!isValidEmail(email)) {
+            return SendMailResponse(message = "잘못된 이메일 주소입니다.")
+        }
         val randomString = mailUtils.sendMail(email)
 
         mailRepository.save(
@@ -215,6 +212,4 @@ class UserServiceImpl(
         val regex = "^[A-Za-z0-9+_.-]+@(.+)$".toRegex() // 이메일 형식 검증
         return email.matches(regex)
     }
-
-
 }
