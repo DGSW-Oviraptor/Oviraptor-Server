@@ -10,5 +10,5 @@ class MailEntity(
     @Column
     val email : String,
     @Column
-    val authcode : String
+    val authCode : String
 )

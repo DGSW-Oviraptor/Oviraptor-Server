@@ -42,7 +42,7 @@ class UserServiceImpl(
         val latestMailEntity = mailEntities.maxByOrNull { it.id!! }  // createdDate를 기준으로 최신 데이터 선택
 
         // 인증 코드 일치 확인
-        if (latestMailEntity?.authcode != registerUserRequest.authCode) {
+        if (latestMailEntity?.authCode != registerUserRequest.authCode) {
             return BaseResponse(message = "잘못된 인증 코드입니다.")
         }
 
@@ -196,7 +196,7 @@ class UserServiceImpl(
         mailRepository.save(
             MailEntity(
                 email = email,
-                authcode = randomString
+                authCode = randomString
             )
         )
 
