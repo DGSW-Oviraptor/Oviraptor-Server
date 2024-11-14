@@ -2,7 +2,7 @@ services:
   app:
     build: .
     ports:
-      - "8080:8080"
+      - "8081:8080"
     depends_on:
       - mysql
       - mongodb
@@ -18,7 +18,7 @@ services:
     container_name: mysql-db
     environment:
       MYSQL_ROOT_PASSWORD: Lshdgsw71
-      MYSQL_DATABASE: ${MYSQL_DATABASE_NAME}
+      MYSQL_DATABASE: chatprac
     ports:
       - "3305:3306"
     volumes:
@@ -30,9 +30,9 @@ services:
     image: mongo:8
     container_name: mongo-db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE_NAME}
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Lshdgsw71
+      MONGO_INITDB_DATABASE: chat
     ports:
       - "27016:27017"
     volumes:

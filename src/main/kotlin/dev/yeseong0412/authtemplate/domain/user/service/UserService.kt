@@ -13,7 +13,8 @@ interface UserService {
     fun getAllRooms(userId: Long): BaseResponse<List<ChatRoomInfo>>
     fun getUserInfo(userId: Long): BaseResponse<UserInfo>
     fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserInfo>
-    fun addFriend(userId: Long, friendRequest: FriendRequest): BaseResponse<UserInfo>
+    fun changePassword(userId: Long, changePasswordRequest: ChangePasswordRequest): BaseResponse<Unit>
+    fun addFriend(userId: Long, email: String): BaseResponse<UserInfo>
     fun getAllFriends(userId: Long): BaseResponse<List<UserInfo>>
     fun searchByUsername(username: String) : BaseResponse<List<UserInfo>>
     fun sendMail(email: String): BaseResponse<Unit>

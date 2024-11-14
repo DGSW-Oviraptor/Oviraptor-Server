@@ -12,6 +12,7 @@ class TestController {
     ){
         println("======================")
         println("userId = $userId")
+        println(System.getenv("SPRING_MYSQL_USER"))
         println("======================")
     }
 }

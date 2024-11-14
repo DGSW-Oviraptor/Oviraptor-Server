@@ -1,1 +1,4 @@
 .DS_Store
+application.yml
+Dockerfile
+docker-compose.yml

@@ -33,10 +33,16 @@ class UserController(
         return userService.changeUserInfo(userId, changeInfoRequest)
     }
 
+    @Operation(summary = "비밀번호 수정")
+    @PatchMapping("/info/password")
+    fun changePassword(@GetAuthenticatedId userId: Long, @RequestBody changePasswordRequest: ChangePasswordRequest): BaseResponse<Unit> {
+        return userService.changePassword(userId, changePasswordRequest)
+    }
+
     @Operation(summary = "친구추가")
     @PostMapping("/friends/add")
-    fun addFriend(@GetAuthenticatedId userId: Long, @RequestBody friendRequest: FriendRequest): BaseResponse<UserInfo> {
-        return userService.addFriend(userId, friendRequest)
+    fun addFriend(@GetAuthenticatedId userId: Long, @RequestBody email: String): BaseResponse<UserInfo> {
+        return userService.addFriend(userId, email)
     }
 
     @Operation(summary = "친구목록")

@@ -4,13 +4,13 @@ server:
 # MySQL Info 본인 MySQL로 수정
 spring:
   datasource:
-    url: ${MYSQL_HOST}
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://localhost:3306/chatprac
+    username: root
+    password: Lshdgsw71
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     mongodb:
-      uri: ${MONGODB_HOST}
+      uri: mongodb://localhost:27017/chat
   # JPA Setting
   jpa:
     hibernate:
@@ -24,8 +24,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USER}
-    password: ${MAIL_PASSWORD}
+    username: leegeh1213@gmail.com
+    password: "ueda nakv ykhn bwvj"
     properties:
       mail:
         smtp:
@@ -51,9 +51,9 @@ logging:
 #    root: debug
 #JWT Secret Random code (32바이트 길이의 무작위 바이트 문자열을 64자 길이의 16진수 문자열로 인코딩)
 jwt :
-  secret : ${JWT_KEY}
+  secret : 4626379cadc10451644ebfc33bdef68993cd3edc426640f8c28758cd853dbfa5
   expire :
     #access: 600000 = 2 hour
-    access: ${ACCESS_END}
+    access: 6000000
     #refresh: 864000000 = 10 day
-    refresh: ${REFRESH_END}
+    refresh: 864000000

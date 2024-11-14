@@ -128,18 +128,15 @@ class UserServiceImpl(
 
     override fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserInfo> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
+
         if (userRepository.existsByEmail(changeInfoRequest.email) && user.email != changeInfoRequest.email) throw CustomException(
             UserErrorCode.USER_ALREADY_EXIST
         )
-
         if (changeInfoRequest.email != "") {
             user.email = changeInfoRequest.email
         }
         if (changeInfoRequest.name != "") {
             user.name = changeInfoRequest.name
-        }
-        if (changeInfoRequest.password != "") {
-            user.password = bytePasswordEncoder.encode(changeInfoRequest.password.trim())
         }
 
         userRepository.save(user)
@@ -150,9 +147,23 @@ class UserServiceImpl(
         )
     }
 
-    override fun addFriend(userId: Long, friendRequest: FriendRequest): BaseResponse<UserInfo> {
+    override fun changePassword(userId: Long, changePasswordRequest: ChangePasswordRequest): BaseResponse<Unit> {
+        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
+
+        if (user.password != changePasswordRequest.oldPassword) throw CustomException(UserErrorCode.PASSWORD_NOT_MATCH)
+
+        user.password = changePasswordRequest.newPassword
+
+        userRepository.save(user)
+
+        return BaseResponse(
+            message = "success"
+        )
+    }
+
+    override fun addFriend(userId: Long, email: String): BaseResponse<UserInfo> {
         val user = userRepository.findByIdOrNull(userId)?: throw  CustomException(UserErrorCode.USER_NOT_FOUND)
-        val friend = userRepository.findByEmail(friendRequest.email)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
+        val friend = userRepository.findByEmail(email)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
         if (user == friend || user.friends.contains(friend)) {
             throw CustomException(UserErrorCode.CANNOT_ADD_FRIEND)
         }
