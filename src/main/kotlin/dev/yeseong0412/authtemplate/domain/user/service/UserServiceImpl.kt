@@ -150,9 +150,12 @@ class UserServiceImpl(
     override fun changePassword(userId: Long, changePasswordRequest: ChangePasswordRequest): BaseResponse<Unit> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
 
-        if (user.password != changePasswordRequest.oldPassword) throw CustomException(UserErrorCode.PASSWORD_NOT_MATCH)
+        if (bytePasswordEncoder.matches(
+            user.password,
+            changePasswordRequest.oldPassword
+        )) throw CustomException(UserErrorCode.PASSWORD_NOT_MATCH)
 
-        user.password = changePasswordRequest.newPassword
+        user.password = bytePasswordEncoder.encode(changePasswordRequest.newPassword.trim())
 
         userRepository.save(user)
 
