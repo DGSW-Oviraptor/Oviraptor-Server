@@ -15,24 +15,26 @@ services:
 
   mysql:
     image: mysql:8
+    container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: chatprac
+      MYSQL_ROOT_PASSWORD: Lshdgsw71
+      MYSQL_DATABASE: ${MYSQL_DATABASE_NAME}
     ports:
-      - "3306:3306"
+      - "3305:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
       - app-network
 
   mongodb:
-    image: mongo:8.0.1
+    image: mongo:8
+    container_name: mongo-db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: Lshdgsw71
-      MONGO_INITDB_DATABASE: chat
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE_NAME}
     ports:
-      - "27017:27017"
+      - "27016:27017"
     volumes:
       - mongodb-data:/data/db
     networks:
