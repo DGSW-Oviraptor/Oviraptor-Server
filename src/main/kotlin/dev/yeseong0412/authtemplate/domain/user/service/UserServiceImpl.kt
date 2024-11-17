@@ -1,11 +1,11 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
-import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.user.exception.EmailErrorCode
 import dev.yeseong0412.authtemplate.domain.user.domain.entity.MailEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
-import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
+import dev.yeseong0412.authtemplate.domain.user.presentation.dto.response.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.MailRepository
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*

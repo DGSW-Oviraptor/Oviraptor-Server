@@ -1,7 +1,7 @@
 package dev.yeseong0412.authtemplate.domain.user.presentation
 
-import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
-import dev.yeseong0412.authtemplate.domain.user.domain.model.UserInfo
+import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.user.presentation.dto.response.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*
 import dev.yeseong0412.authtemplate.domain.user.service.UserService
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
