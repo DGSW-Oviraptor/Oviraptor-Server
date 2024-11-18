@@ -37,6 +37,6 @@ out/
 .vscode/
 
 .DS_Store
-application.yml
+src/main/resources/application.yml
 Dockerfile
 docker-compose.yml
