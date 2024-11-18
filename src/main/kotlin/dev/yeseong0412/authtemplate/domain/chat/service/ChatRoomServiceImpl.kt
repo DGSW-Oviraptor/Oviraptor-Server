@@ -3,13 +3,12 @@ package dev.yeseong0412.authtemplate.domain.chat.service
 import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatMessageEntity
 import dev.yeseong0412.authtemplate.domain.chat.domain.repository.ChatRoomRepository
 import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatRoomEntity
-import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatMessageInfo
-import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomIdInfo
-import dev.yeseong0412.authtemplate.domain.chat.domain.model.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatMessageInfo
+import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.domain.repository.ChatMessageRepository
 import dev.yeseong0412.authtemplate.domain.chat.exception.ChatRoomErrorCode
-import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatMessage
-import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.ChatOnline
+import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.request.ChatMessage
+import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatOnline
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
@@ -24,11 +23,11 @@ class ChatRoomServiceImpl(
     private val chatMessageRepository: ChatMessageRepository,
     private val jwtUtils: JwtUtils
 ) : ChatRoomService {
-    override fun getAllRooms(): BaseResponse<List<ChatRoomIdInfo>> {
+    override fun getAllRooms(): BaseResponse<List<ChatRoomInfo>> {
         val rooms = chatRoomRepository.findAll()
         return BaseResponse(
             message = "success",
-            data = rooms.map { ChatRoomIdInfo(it.id, it.name, it.participants.map { pr -> pr.name }) }
+            data = rooms.map { ChatRoomInfo(it.id, it.name, it.participants.map { pr -> pr.name }) }
         )
     }
 
@@ -42,7 +41,7 @@ class ChatRoomServiceImpl(
 
         return BaseResponse(
             message = "success",
-            data = ChatRoomInfo(name = room.name, participants = room.participants.map { it -> it.name })
+            data = ChatRoomInfo(id = room.id, name = room.name, participants = room.participants.map { it -> it.name })
         )
     }
 
@@ -59,7 +58,7 @@ class ChatRoomServiceImpl(
 
         return BaseResponse(
             message = "success",
-            data = ChatRoomInfo(name = room.name, participants = room.participants.map { it -> it.name })
+            data = ChatRoomInfo(id = room.id, name = room.name, participants = room.participants.map { it -> it.name })
         )
     }
 
@@ -76,7 +75,7 @@ class ChatRoomServiceImpl(
     }
 
     override fun getRoomInfo(roomId: Long): BaseResponse<ChatRoomInfo> {
-        val roomInfo = chatRoomRepository.findById(roomId).map { ChatRoomInfo(name = it.name, participants = it.participants.map { pr -> pr.name }) }.orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val roomInfo = chatRoomRepository.findById(roomId).map { ChatRoomInfo(id = it.id, name = it.name, participants = it.participants.map { pr -> pr.name }) }.orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
 
         return BaseResponse(
             message = "success",
