@@ -1,8 +1,8 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import dev.yeseong0412.authtemplate.domain.user.exception.EmailErrorCode
-import dev.yeseong0412.authtemplate.domain.user.domain.entity.MailEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.response.UserInfo
@@ -11,7 +11,7 @@ import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtInfo
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
-import dev.yeseong0412.authtemplate.global.auth.jwt.MailUtility
+import dev.yeseong0412.authtemplate.global.auth.mail.MailUtility
 import dev.yeseong0412.authtemplate.global.auth.jwt.exception.JwtErrorCode
 import dev.yeseong0412.authtemplate.global.auth.jwt.exception.type.JwtErrorType
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
@@ -33,39 +33,69 @@ class UserServiceImpl(
 
     @Transactional
     override fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit> {
-
-        // 이메일에 해당하는 모든 인증 기록을 최신순으로 가져오기
-        val mailEntities = mailRepository.findAllByEmail(registerUserRequest.email)
-        if (mailEntities.isEmpty()) throw CustomException(UserErrorCode.USER_NOT_FOUND)
-
-        // 가장 최신 인증 코드만 사용
-        val latestMailEntity = mailEntities.maxByOrNull { it.id!! }  // createdDate를 기준으로 최신 데이터 선택
-
-        // 인증 코드 일치 확인
-        if (latestMailEntity?.authCode != registerUserRequest.authCode) {
-            return BaseResponse(message = "잘못된 인증 코드입니다.")
+        if (mailRepository.findByEmail(registerUserRequest.email).isNullOrEmpty() || mailRepository.findByEmail(registerUserRequest.email) != registerUserRequest.authCode) {
+            throw CustomException(EmailErrorCode.AUTHENTICODE_INVALID)
         }
 
-        // 인증 코드 삭제
-        mailRepository.deleteByEmail(registerUserRequest.email)
-
-        // 이메일 중복 확인
         if (userRepository.existsByEmail(registerUserRequest.email)) {
             throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
         }
 
-        // 회원가입 처리
-        userRepository.save(
-            userMapper.toEntity(
-                userMapper.toDomain(
-                    registerUserRequest,
-                    bytePasswordEncoder.encode(registerUserRequest.password.trim())
-                )
-            )
-        )
+        if (registerUserRequest.name.isEmpty()) {
+            throw CustomException(UserErrorCode.USERNAME_INVALID)
+        }
 
-        return BaseResponse(message = "회원가입 성공")
+        if (registerUserRequest.password.isEmpty()) {
+            throw CustomException(UserErrorCode.PASSWORD_INVALID)
+        }
+
+        val user = UserEntity(
+            email = registerUserRequest.email,
+            name = registerUserRequest.name,
+            password = bytePasswordEncoder.encode(registerUserRequest.password)
+        )
+        userRepository.save(user)
+
+        mailRepository.deleteByEmail(registerUserRequest.email)
+
+        return BaseResponse(message = "success")
     }
+
+//    @Transactional
+//    override fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit> {
+//
+//        // 이메일에 해당하는 모든 인증 기록을 최신순으로 가져오기
+//        val mailEntities = mailRepository.findAllByEmail(registerUserRequest.email)
+//        if (mailEntities.isEmpty()) throw CustomException(UserErrorCode.USER_NOT_FOUND)
+//
+//        // 가장 최신 인증 코드만 사용
+//        val latestMailEntity = mailEntities.maxByOrNull { it.id!! }  // createdDate를 기준으로 최신 데이터 선택
+//
+//        // 인증 코드 일치 확인
+//        if (latestMailEntity?.authCode != registerUserRequest.authCode) {
+//            return BaseResponse(message = "잘못된 인증 코드입니다.")
+//        }
+//
+//        // 인증 코드 삭제
+//        mailRepository.deleteByEmail(registerUserRequest.email)
+//
+//        // 이메일 중복 확인
+//        if (userRepository.existsByEmail(registerUserRequest.email)) {
+//            throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
+//        }
+//
+//        // 회원가입 처리
+//        userRepository.save(
+//            userMapper.toEntity(
+//                userMapper.toDomain(
+//                    registerUserRequest,
+//                    bytePasswordEncoder.encode(registerUserRequest.password.trim())
+//                )
+//            )
+//        )
+//
+//        return BaseResponse(message = "회원가입 성공")
+//    }
 
     @Transactional(readOnly = true)
     override fun loginUser(loginRequest: LoginRequest): BaseResponse<JwtInfo> {
@@ -112,7 +142,7 @@ class UserServiceImpl(
 
         return BaseResponse(
             message = "success",
-            data = rooms.map { ChatRoomInfo(name = it.name, participants = it.participants.map { pr -> pr.name }) }
+            data = rooms.map { ChatRoomInfo(id = it.id, name = it.name, participants = it.participants.map { pr -> pr.name }) }
         )
     }
 
@@ -205,19 +235,13 @@ class UserServiceImpl(
         if (!isValidEmail(email)) {
             throw CustomException(EmailErrorCode.EMAIL_INVALID)
         }
-        val randomString = mailUtils.sendMail(email)
+        val authCode = mailUtils.sendMail(email)
 
-        mailRepository.save(
-            MailEntity(
-                email = email,
-                authCode = randomString
-            )
-        )
+        mailRepository.save(email, authCode)
 
         return BaseResponse(
             message = "success"
         )
-
     }
 
     fun isValidEmail(email: String): Boolean {

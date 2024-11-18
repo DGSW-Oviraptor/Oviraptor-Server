@@ -1,6 +1,5 @@
-package dev.yeseong0412.authtemplate.global.auth.jwt
+package dev.yeseong0412.authtemplate.global.auth.mail
 
-import dev.yeseong0412.authtemplate.domain.user.domain.repository.MailRepository
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Component
@@ -30,8 +29,5 @@ class MailUtility(
         javaMailSender.send(message)
 
         return randomString
-
     }
-
-
 }

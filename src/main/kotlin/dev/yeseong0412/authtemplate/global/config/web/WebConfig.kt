@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.global.config
+package dev.yeseong0412.authtemplate.global.config.web
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry

@@ -1,7 +1,6 @@
 package dev.yeseong0412.authtemplate.domain.chat.presentation
 
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatMessageInfo
-import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomIdInfo
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.request.ChatMessage
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatOnline
@@ -23,7 +22,7 @@ class ChatRoomController(
 
     @Operation(summary = "방 목록")
     @GetMapping("/rooms")
-    fun getAllRooms(): BaseResponse<List<ChatRoomIdInfo>> = chatRoomService.getAllRooms()
+    fun getAllRooms(): BaseResponse<List<ChatRoomInfo>> = chatRoomService.getAllRooms()
 
     @Operation(summary = "방 생성")
     @PostMapping("/create")

@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.global.config
+package dev.yeseong0412.authtemplate.global.config.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils

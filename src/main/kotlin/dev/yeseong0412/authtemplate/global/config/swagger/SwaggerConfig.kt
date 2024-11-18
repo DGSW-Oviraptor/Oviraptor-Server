@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.global.config
+package dev.yeseong0412.authtemplate.global.config.swagger
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.models.Components

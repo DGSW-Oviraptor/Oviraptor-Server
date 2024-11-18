@@ -1,14 +1,13 @@
 package dev.yeseong0412.authtemplate.domain.chat.service
 
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatMessageInfo
-import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomIdInfo
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.request.ChatMessage
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatOnline
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 
 interface ChatRoomService {
-    fun getAllRooms(): BaseResponse<List<ChatRoomIdInfo>>
+    fun getAllRooms(): BaseResponse<List<ChatRoomInfo>>
     fun createRoom(name: String, userId: Long): BaseResponse<ChatRoomInfo>
     fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoomInfo>
     fun deleteRoom(roomId: Long): BaseResponse<Unit>
