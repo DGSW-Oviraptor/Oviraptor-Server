@@ -61,42 +61,6 @@ class UserServiceImpl(
         return BaseResponse(message = "success")
     }
 
-//    @Transactional
-//    override fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit> {
-//
-//        // 이메일에 해당하는 모든 인증 기록을 최신순으로 가져오기
-//        val mailEntities = mailRepository.findAllByEmail(registerUserRequest.email)
-//        if (mailEntities.isEmpty()) throw CustomException(UserErrorCode.USER_NOT_FOUND)
-//
-//        // 가장 최신 인증 코드만 사용
-//        val latestMailEntity = mailEntities.maxByOrNull { it.id!! }  // createdDate를 기준으로 최신 데이터 선택
-//
-//        // 인증 코드 일치 확인
-//        if (latestMailEntity?.authCode != registerUserRequest.authCode) {
-//            return BaseResponse(message = "잘못된 인증 코드입니다.")
-//        }
-//
-//        // 인증 코드 삭제
-//        mailRepository.deleteByEmail(registerUserRequest.email)
-//
-//        // 이메일 중복 확인
-//        if (userRepository.existsByEmail(registerUserRequest.email)) {
-//            throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
-//        }
-//
-//        // 회원가입 처리
-//        userRepository.save(
-//            userMapper.toEntity(
-//                userMapper.toDomain(
-//                    registerUserRequest,
-//                    bytePasswordEncoder.encode(registerUserRequest.password.trim())
-//                )
-//            )
-//        )
-//
-//        return BaseResponse(message = "회원가입 성공")
-//    }
-
     @Transactional(readOnly = true)
     override fun loginUser(loginRequest: LoginRequest): BaseResponse<JwtInfo> {
         val user = userRepository.findByEmail(loginRequest.email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
@@ -148,7 +112,7 @@ class UserServiceImpl(
 
     override fun getUserInfo(userId: Long): BaseResponse<UserInfo> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
-        val userInfo = UserInfo(email = user.email, name = user.name)
+        val userInfo = UserInfo(email = user.email, name = user.name, role = user.role)
 
         return BaseResponse(
             message = "success",
@@ -173,7 +137,7 @@ class UserServiceImpl(
 
         return BaseResponse(
             message = "success",
-            data = UserInfo(email = user.email, name = user.name)
+            data = UserInfo(email = user.email, name = user.name, role = user.role)
         )
     }
 
@@ -208,7 +172,7 @@ class UserServiceImpl(
 
         return BaseResponse(
             message = "success",
-            data = UserInfo(email = friend.email, name = friend.name)
+            data = UserInfo(email = friend.email, name = friend.name, role = user.role)
         )
     }
 
@@ -218,7 +182,7 @@ class UserServiceImpl(
 
         return BaseResponse(
             message = "success",
-            data = friends.map { UserInfo(email = it.email, name = it.name) }
+            data = friends.map { UserInfo(email = it.email, name = it.name, role = it.role) }
         )
     }
 
@@ -226,7 +190,7 @@ class UserServiceImpl(
         val user = userRepository.findAllByNameContaining(username)
         return BaseResponse(
             message = "success",
-            data = user.map { UserInfo(email = it.email, name = it.name) }
+            data = user.map { UserInfo(email = it.email, name = it.name, role = it.role) }
         )
     }
 
