@@ -14,6 +14,7 @@ import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -21,7 +22,8 @@ class ChatRoomServiceImpl(
     private val chatRoomRepository: ChatRoomRepository,
     private val userRepository: UserRepository,
     private val chatMessageRepository: ChatMessageRepository,
-    private val jwtUtils: JwtUtils
+    private val jwtUtils: JwtUtils,
+
 ) : ChatRoomService {
     override fun getAllRooms(): BaseResponse<List<ChatRoomInfo>> {
         val rooms = chatRoomRepository.findAll()
