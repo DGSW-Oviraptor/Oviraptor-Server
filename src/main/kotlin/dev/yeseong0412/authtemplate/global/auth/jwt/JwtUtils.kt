@@ -2,17 +2,13 @@ package dev.yeseong0412.authtemplate.global.auth.jwt
 
 import dev.yeseong0412.authtemplate.domain.user.domain.model.User
 import dev.yeseong0412.authtemplate.global.auth.jwt.exception.type.JwtErrorType
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.MalformedJwtException
-import io.jsonwebtoken.UnsupportedJwtException
+import io.jsonwebtoken.*
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets
-import java.security.SignatureException
 import java.util.*
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
@@ -25,32 +21,30 @@ class JwtUtils(
 
     private val secretKey: SecretKey = SecretKeySpec(
         this.jwtProperties.secretKey.toByteArray(StandardCharsets.UTF_8),
-        Jwts.SIG.HS256.key().build().algorithm
+        SignatureAlgorithm.HS256.jcaName
     )
 
     fun getUsername(token: String): String {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).payload.get(
-            "email",
-            String::class.java
-        )
+        val claims = parseClaims(token)
+        return claims["email"] as String
     }
 
     fun checkTokenInfo(token: String): JwtErrorType {
-        try {
-            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token)
-            return JwtErrorType.OK
+        return try {
+            parseClaims(token) // 유효성 검증
+            JwtErrorType.OK
         } catch (e: ExpiredJwtException) {
-            return JwtErrorType.ExpiredJwtException
+            JwtErrorType.ExpiredJwtException
         } catch (e: SignatureException) {
-            return JwtErrorType.SignatureException
+            JwtErrorType.SignatureException
         } catch (e: MalformedJwtException) {
-            return JwtErrorType.MalformedJwtException
+            JwtErrorType.MalformedJwtException
         } catch (e: UnsupportedJwtException) {
-            return JwtErrorType.UnsupportedJwtException
+            JwtErrorType.UnsupportedJwtException
         } catch (e: IllegalArgumentException) {
-            return JwtErrorType.IllegalArgumentException
+            JwtErrorType.IllegalArgumentException
         } catch (e: Exception) {
-            return JwtErrorType.UNKNOWN_EXCEPTION
+            JwtErrorType.UNKNOWN_EXCEPTION
         }
     }
 
@@ -68,7 +62,6 @@ class JwtUtils(
             tokenExpired = jwtProperties.refreshExpired
         )
 
-
         return JwtInfo("Bearer $accessToken", "Bearer $refreshToken")
     }
 
@@ -78,7 +71,6 @@ class JwtUtils(
     }
 
     fun refreshToken(user: User): String {
-
         return "Bearer " + createToken(
             user = user,
             tokenExpired = jwtProperties.accessExpired
@@ -91,10 +83,16 @@ class JwtUtils(
             .claim("id", user.id)
             .claim("email", user.email)
             .claim("role", user.role)
-            .issuedAt(Date(now))
-            .expiration(Date(now + tokenExpired))
-            .signWith(secretKey)
+            .setIssuedAt(Date(now))
+            .setExpiration(Date(now + tokenExpired))
+            .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact()
     }
 
+    private fun parseClaims(token: String): Claims {
+        return Jwts.parser()
+            .setSigningKey(secretKey)
+            .parseClaimsJws(token)
+            .body
+    }
 }
