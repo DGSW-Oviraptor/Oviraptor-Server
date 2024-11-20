@@ -41,7 +41,7 @@ class UserController(
 
     @Operation(summary = "친구추가")
     @PostMapping("/friends/add")
-    fun addFriend(@GetAuthenticatedId userId: Long, @RequestBody email: String): BaseResponse<UserInfo> {
+    fun addFriend(@GetAuthenticatedId userId: Long, @RequestParam email: String): BaseResponse<UserInfo> {
         return userService.addFriend(userId, email)
     }
 
@@ -51,9 +51,9 @@ class UserController(
         return userService.getAllFriends(userId)
     }
 
-    @Operation(summary = "이름 검색")
+    @Operation(summary = "이름으로 검색")
     @GetMapping("/search")
-    fun getAllFriends(username : String): BaseResponse<List<UserInfo>> {
+    fun getAllFriends(@RequestParam username : String): BaseResponse<List<UserInfo>> {
         return userService.searchByUsername(username)
     }
 }

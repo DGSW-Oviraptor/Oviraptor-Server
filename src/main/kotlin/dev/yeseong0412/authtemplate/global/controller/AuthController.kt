@@ -35,7 +35,7 @@ class AuthController(
         return userService.refreshToken(refreshRequest)
     }
 
-    @Operation(summary = "이메일")
+    @Operation(summary = "인증코드 받기")
     @PostMapping("/email")
     fun sendMail(
         @RequestParam email : String
