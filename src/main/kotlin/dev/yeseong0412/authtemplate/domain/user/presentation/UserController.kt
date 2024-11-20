@@ -29,13 +29,19 @@ class UserController(
 
     @Operation(summary = "내 정보 수정")
     @PatchMapping("/info")
-    fun changeUserInfo(@GetAuthenticatedId userId: Long, @RequestBody changeInfoRequest: ChangeInfoRequest): BaseResponse<UserInfo> {
+    fun changeUserInfo(
+        @GetAuthenticatedId userId: Long,
+        @RequestBody changeInfoRequest: ChangeInfoRequest
+    ): BaseResponse<UserInfo> {
         return userService.changeUserInfo(userId, changeInfoRequest)
     }
 
     @Operation(summary = "비밀번호 수정")
     @PatchMapping("/info/password")
-    fun changePassword(@GetAuthenticatedId userId: Long, @RequestBody changePasswordRequest: ChangePasswordRequest): BaseResponse<Unit> {
+    fun changePassword(
+        @GetAuthenticatedId userId: Long,
+        @RequestBody changePasswordRequest: ChangePasswordRequest
+    ): BaseResponse<Unit> {
         return userService.changePassword(userId, changePasswordRequest)
     }
 
@@ -53,7 +59,7 @@ class UserController(
 
     @Operation(summary = "이름으로 검색")
     @GetMapping("/search")
-    fun getAllFriends(@RequestParam username : String): BaseResponse<List<UserInfo>> {
+    fun getAllFriends(@RequestParam username: String): BaseResponse<List<UserInfo>> {
         return userService.searchByUsername(username)
     }
 }
