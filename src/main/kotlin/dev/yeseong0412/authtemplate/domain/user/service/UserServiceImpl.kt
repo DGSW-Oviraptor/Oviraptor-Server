@@ -33,7 +33,10 @@ class UserServiceImpl(
 
     @Transactional
     override fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit> {
-        if (mailRepository.findByEmail(registerUserRequest.email).isNullOrEmpty() || mailRepository.findByEmail(registerUserRequest.email) != registerUserRequest.authCode) {
+        if (mailRepository.findByEmail(registerUserRequest.email).isNullOrEmpty() || mailRepository.findByEmail(
+                registerUserRequest.email
+            ) != registerUserRequest.authCode
+        ) {
             throw CustomException(EmailErrorCode.AUTHENTICODE_INVALID)
         }
 
@@ -106,7 +109,12 @@ class UserServiceImpl(
 
         return BaseResponse(
             message = "success",
-            data = rooms.map { ChatRoomInfo(id = it.id, name = it.name, participants = it.participants.map { pr -> pr.name }) }
+            data = rooms.map {
+                ChatRoomInfo(
+                    id = it.id,
+                    name = it.name,
+                    participants = it.participants.map { pr -> pr.name })
+            }
         )
     }
 
@@ -145,9 +153,10 @@ class UserServiceImpl(
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
 
         if (bytePasswordEncoder.matches(
-            user.password,
-            changePasswordRequest.oldPassword
-        )) throw CustomException(UserErrorCode.PASSWORD_NOT_MATCH)
+                user.password,
+                changePasswordRequest.oldPassword
+            )
+        ) throw CustomException(UserErrorCode.PASSWORD_NOT_MATCH)
 
         user.password = bytePasswordEncoder.encode(changePasswordRequest.newPassword.trim())
 
@@ -159,8 +168,8 @@ class UserServiceImpl(
     }
 
     override fun addFriend(userId: Long, email: String): BaseResponse<UserInfo> {
-        val user = userRepository.findByIdOrNull(userId)?: throw  CustomException(UserErrorCode.USER_NOT_FOUND)
-        val friend = userRepository.findByEmail(email)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
+        val user = userRepository.findByIdOrNull(userId) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
+        val friend = userRepository.findByEmail(email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
         if (user == friend || user.friends.contains(friend)) {
             throw CustomException(UserErrorCode.CANNOT_ADD_FRIEND)
         }

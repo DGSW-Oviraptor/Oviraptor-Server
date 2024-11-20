@@ -19,7 +19,8 @@ class AuthController(
     @Operation(summary = "회원가입")
     @PostMapping("/register")
     fun registerUser(
-        @RequestBody registerUserRequest: RegisterUserRequest): BaseResponse<Unit> {
+        @RequestBody registerUserRequest: RegisterUserRequest
+    ): BaseResponse<Unit> {
         return userService.registerUser(registerUserRequest)
     }
 
@@ -38,7 +39,7 @@ class AuthController(
     @Operation(summary = "인증코드 받기")
     @PostMapping("/email")
     fun sendMail(
-        @RequestParam email : String
+        @RequestParam email: String
     ): BaseResponse<Unit> {
         return userService.sendMail(email)
     }
