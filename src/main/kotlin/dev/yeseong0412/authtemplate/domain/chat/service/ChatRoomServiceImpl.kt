@@ -14,17 +14,17 @@ import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.util.Queue
 
 @Service
 class ChatRoomServiceImpl(
     private val chatRoomRepository: ChatRoomRepository,
     private val userRepository: UserRepository,
     private val chatMessageRepository: ChatMessageRepository,
-    private val jwtUtils: JwtUtils,
-
+    private val jwtUtils: JwtUtils
 ) : ChatRoomService {
+
     override fun getAllRooms(): BaseResponse<List<ChatRoomInfo>> {
         val rooms = chatRoomRepository.findAll()
         return BaseResponse(
@@ -98,6 +98,10 @@ class ChatRoomServiceImpl(
 
         room.participants.remove(user)
         chatRoomRepository.save(room)
+
+        if (room.participants.size == 0) {
+            chatRoomRepository.delete(room)
+        }
 
         return ChatOnline(writer = "시스템", message = "${user.name} 님이 ${room.name}에서 퇴장하셨습니다.")
     }

@@ -20,7 +20,7 @@ class UserEntity(
     @Column(nullable = false)
     var password: String, // Password
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_friends",
         joinColumns = [JoinColumn(name = "user_id")],
@@ -28,7 +28,7 @@ class UserEntity(
     )
     val friends: MutableSet<UserEntity> = mutableSetOf(),
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_chatroom",
         joinColumns = [JoinColumn(name = "user_id")],

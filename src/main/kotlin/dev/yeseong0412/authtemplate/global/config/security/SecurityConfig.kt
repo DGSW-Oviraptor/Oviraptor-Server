@@ -66,8 +66,13 @@ class SecurityConfig (
     fun corsConfigurationSource(): CorsConfigurationSource {
         val corsConfiguration = CorsConfiguration()
         corsConfiguration.addAllowedOriginPattern("*")
-        corsConfiguration.addAllowedHeader("*")
-        corsConfiguration.addAllowedMethod("*")
+        corsConfiguration.addAllowedHeader("Content-Type")
+        corsConfiguration.addAllowedHeader("Authorization")
+        corsConfiguration.addAllowedHeader("Accept")
+        corsConfiguration.addAllowedMethod("GET")
+        corsConfiguration.addAllowedMethod("POST")
+        corsConfiguration.addAllowedMethod("PATCH")
+        corsConfiguration.addAllowedMethod("DELETE")
         corsConfiguration.allowCredentials = true
 
         val urlBasedCorsConfigurationSource = UrlBasedCorsConfigurationSource()
@@ -75,5 +80,4 @@ class SecurityConfig (
 
         return urlBasedCorsConfigurationSource
     }
-
 }

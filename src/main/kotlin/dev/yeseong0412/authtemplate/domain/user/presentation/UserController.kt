@@ -15,7 +15,7 @@ class UserController(
     private val userService: UserService
 ) {
 
-    @Operation(summary = "내 방")
+    @Operation(summary = "내 방 목록")
     @GetMapping("/rooms")
     fun getAllRooms(@GetAuthenticatedId userId: Long): BaseResponse<List<ChatRoomInfo>> {
         return userService.getAllRooms(userId)

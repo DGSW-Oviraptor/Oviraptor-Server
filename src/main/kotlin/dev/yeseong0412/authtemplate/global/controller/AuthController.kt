@@ -37,7 +37,7 @@ class AuthController(
     }
 
     @Operation(summary = "인증코드 받기")
-    @PostMapping("/email")
+    @GetMapping("/email")
     fun sendMail(
         @RequestParam email: String
     ): BaseResponse<Unit> {
