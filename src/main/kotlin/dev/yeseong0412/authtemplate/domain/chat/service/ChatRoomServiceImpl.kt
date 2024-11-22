@@ -122,12 +122,12 @@ class ChatRoomServiceImpl(
         return ChatOnline(writer = user.name, message = message.message)
     }
 
-    override fun getAllMessages(roomId: Long, lastId: String?, userId: Long): BaseResponse<List<ChatMessageInfo>> {
+    override fun getAllMessages(roomId: Long, objectId: String?, userId: Long): BaseResponse<List<ChatMessageInfo>> {
         val room = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
-        val objectId = if (lastId != null) ObjectId(lastId) else ObjectId()
+        val id = if (objectId != null) ObjectId(objectId) else ObjectId()
         val pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "_id"))
-        val messages = chatMessageRepository.findMessagesByRoomIdAndTimestamp(roomId, objectId, pageable)
+        val messages = chatMessageRepository.findMessagesByRoomIdAndObjectId(roomId, id, pageable)
             .map {
                 ChatMessageInfo(
                     id = it.id.toString(),
