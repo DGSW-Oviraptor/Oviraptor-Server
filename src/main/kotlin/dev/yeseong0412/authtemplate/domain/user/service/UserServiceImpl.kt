@@ -68,11 +68,7 @@ class UserServiceImpl(
     override fun loginUser(loginRequest: LoginRequest): BaseResponse<JwtInfo> {
         val user = userRepository.findByEmail(loginRequest.email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 
-        if (bytePasswordEncoder.matches(
-                user.password,
-                loginRequest.password
-            )
-        ) throw CustomException(UserErrorCode.USER_NOT_MATCH)
+        if (!bytePasswordEncoder.matches(loginRequest.password, user.password)) throw CustomException(UserErrorCode.USER_NOT_MATCH)
 
         return BaseResponse(
             message = "로그인 성공",
@@ -80,7 +76,6 @@ class UserServiceImpl(
                 user = userMapper.toDomain(user)
             )
         )
-
     }
 
     @Transactional(readOnly = true)
@@ -152,9 +147,9 @@ class UserServiceImpl(
     override fun changePassword(userId: Long, changePasswordRequest: ChangePasswordRequest): BaseResponse<Unit> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
 
-        if (bytePasswordEncoder.matches(
-                user.password,
-                changePasswordRequest.oldPassword
+        if (!bytePasswordEncoder.matches(
+                changePasswordRequest.oldPassword,
+                user.password
             )
         ) throw CustomException(UserErrorCode.PASSWORD_NOT_MATCH)
 
@@ -195,6 +190,21 @@ class UserServiceImpl(
         )
     }
 
+    override fun deleteFried(userId: Long, email: String): BaseResponse<Unit> {
+        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
+        val friend = userRepository.findByEmail(email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
+
+        user.friends.remove(friend)
+        friend.friends.remove(user)
+
+        userRepository.save(user)
+        userRepository.save(friend)
+
+        return BaseResponse(
+            message = "success"
+        )
+    }
+
     override fun searchByUsername(username: String): BaseResponse<List<UserInfo>> {
         val user = userRepository.findAllByNameContaining(username)
         return BaseResponse(
@@ -211,6 +221,19 @@ class UserServiceImpl(
         val authCode = mailUtils.sendMail(email)
 
         mailRepository.save(email, authCode)
+
+        return BaseResponse(
+            message = "success"
+        )
+    }
+
+    override fun deleteUser(userId: Long, deleteUserRequest: DeleteUserRequest): BaseResponse<Unit> {
+        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
+        if (!bytePasswordEncoder.matches(deleteUserRequest.password, user.password)) throw CustomException(UserErrorCode.PASSWORD_NOT_MATCH)
+
+        user.friends.map { it -> it.friends.remove(user) }
+        user.rooms.map { it ->  it.participants.remove(user) }
+        userRepository.delete(user)
 
         return BaseResponse(
             message = "success"

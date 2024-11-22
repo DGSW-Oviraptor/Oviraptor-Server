@@ -57,9 +57,21 @@ class UserController(
         return userService.getAllFriends(userId)
     }
 
+    @Operation(summary = "친구 삭제")
+    @DeleteMapping("/friends/delete")
+    fun deleteFriend(@GetAuthenticatedId userId: Long, @RequestParam email: String): BaseResponse<Unit> {
+        return userService.deleteFried(userId, email)
+    }
+
     @Operation(summary = "이름으로 검색")
     @GetMapping("/search")
     fun getAllFriends(@RequestParam username: String): BaseResponse<List<UserInfo>> {
         return userService.searchByUsername(username)
+    }
+
+    @Operation(summary = "회원 탈퇴")
+    @DeleteMapping("/delete")
+    fun deleteUser(@GetAuthenticatedId userId: Long, @RequestBody deleteUserRequest: DeleteUserRequest): BaseResponse<Unit> {
+        return userService.deleteUser(userId, deleteUserRequest)
     }
 }

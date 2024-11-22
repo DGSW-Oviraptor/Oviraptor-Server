@@ -15,7 +15,6 @@ import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
 import org.springframework.stereotype.Service
-import java.util.Queue
 
 @Service
 class ChatRoomServiceImpl(

@@ -16,6 +16,8 @@ interface UserService {
     fun changePassword(userId: Long, changePasswordRequest: ChangePasswordRequest): BaseResponse<Unit>
     fun addFriend(userId: Long, email: String): BaseResponse<UserInfo>
     fun getAllFriends(userId: Long): BaseResponse<List<UserInfo>>
+    fun deleteFried(userId: Long, email: String): BaseResponse<Unit>
     fun searchByUsername(username: String) : BaseResponse<List<UserInfo>>
     fun sendMail(email: String): BaseResponse<Unit>
+    fun deleteUser(userId: Long, deleteUserRequest: DeleteUserRequest): BaseResponse<Unit>
 }

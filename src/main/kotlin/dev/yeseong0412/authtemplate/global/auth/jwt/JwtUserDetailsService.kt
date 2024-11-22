@@ -10,16 +10,20 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class JwtUserDetailsService (
+class JwtUserDetailsService(
     private val userRepository: UserRepository,
     private val userMapper: UserMapper
 ) : UserDetailsService {
 
     @Transactional(readOnly = true)
     override fun loadUserByUsername(email: String): UserDetails {
-        return JwtUserDetails (
+        println("hihi")
+        if (userRepository.existsByEmail(email)) {
+            println("exists")
+        }
+        return JwtUserDetails(
             user = userMapper.toDomain(
-               entity = userRepository.findByEmail(email)?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
+                entity = userRepository.findByEmail(email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
             )
         )
     }

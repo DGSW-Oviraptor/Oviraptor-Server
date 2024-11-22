@@ -68,7 +68,6 @@ class JwtUtils(
             tokenExpired = jwtProperties.refreshExpired
         )
 
-
         return JwtInfo("Bearer $accessToken", "Bearer $refreshToken")
     }
 
