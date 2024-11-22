@@ -51,8 +51,6 @@ class ChatRoomController(
     @MessageMapping("/enter/{roomId}")
     @SendTo("/topic/room/{roomId}")
     fun enterRoom(@DestinationVariable roomId: Long, @GetAuthenticatedId userId: Long): ChatOnline {
-        println(roomId)
-        println("enter")
         return chatRoomService.enterRoom(roomId = roomId, userId = userId)
     }
 
@@ -65,8 +63,6 @@ class ChatRoomController(
     @MessageMapping("/exit/{roomId}")
     @SendTo("/topic/room/{roomId}")
     fun exitRoom(@DestinationVariable roomId: Long, @GetAuthenticatedId userId: Long): ChatOnline {
-        println(roomId)
-        println("exit")
         return chatRoomService.exitRoom(roomId, userId)
     }
 
