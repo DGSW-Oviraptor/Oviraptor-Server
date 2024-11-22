@@ -58,8 +58,8 @@ class ChatRoomController(
 
     @Operation(summary = "채팅 불러오기")
     @GetMapping("/{roomId}")
-    fun getAllMessages(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): BaseResponse<List<ChatMessageInfo>> {
-        return chatRoomService.getAllMessages(roomId, userId)
+    fun getAllMessages(@PathVariable roomId: Long, @RequestParam(required = false) lastId: String?, @GetAuthenticatedId userId: Long): BaseResponse<List<ChatMessageInfo>> {
+        return chatRoomService.getAllMessages(roomId, lastId, userId)
     }
 
     @MessageMapping("/exit/{roomId}")

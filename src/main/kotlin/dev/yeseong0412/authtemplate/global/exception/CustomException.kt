@@ -1,7 +1,5 @@
 package dev.yeseong0412.authtemplate.global.exception
 
-class CustomException (
-
+class CustomException(
     val customErrorCode: CustomErrorCode
-
-) : RuntimeException ()
+) : RuntimeException()
