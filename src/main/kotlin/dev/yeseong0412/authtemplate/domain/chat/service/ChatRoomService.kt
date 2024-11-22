@@ -15,5 +15,5 @@ interface ChatRoomService {
     fun enterRoom(roomId: Long, userId: Long): ChatOnline
     fun exitRoom(roomId: Long, userId: Long): ChatOnline
     fun sendChat(roomId: Long, token : String, message: ChatMessage) : ChatOnline
-    fun getAllMessages(roomId: Long, userId: Long): BaseResponse<List<ChatMessageInfo>>
+    fun getAllMessages(roomId: Long, lastId: String?, userId: Long): BaseResponse<List<ChatMessageInfo>>
 }

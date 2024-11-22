@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.global.auth.jwt
+package dev.yeseong0412.authtemplate.global.security.jwt.dto
 
 data class JwtInfo (
 

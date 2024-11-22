@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.global.auth.jwt.exception
+package dev.yeseong0412.authtemplate.global.security.jwt.exception
 
 import dev.yeseong0412.authtemplate.global.exception.CustomErrorCode
 import org.springframework.http.HttpStatus

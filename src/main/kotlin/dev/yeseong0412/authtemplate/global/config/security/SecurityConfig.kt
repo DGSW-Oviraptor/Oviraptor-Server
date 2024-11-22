@@ -1,16 +1,17 @@
 package dev.yeseong0412.authtemplate.global.config.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
-import dev.yeseong0412.authtemplate.global.auth.jwt.JwtAuthenticationFilter
+import dev.yeseong0412.authtemplate.global.security.jwt.filter.JwtAuthenticationFilter
+import dev.yeseong0412.authtemplate.global.security.jwt.filter.JwtExceptionFilter
+import dev.yeseong0412.authtemplate.global.security.jwt.handler.JwtAccessDeniedHandler
+import dev.yeseong0412.authtemplate.global.security.jwt.handler.JwtAuthenticationEntryPoint
+import dev.yeseong0412.authtemplate.global.security.jwt.util.JwtUtils
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -20,7 +21,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableWebSecurity
 class SecurityConfig (
     private val jwtUtils: JwtUtils,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
+    private val jwtAccessDeniedHandler: JwtAccessDeniedHandler,
+    private val jwtExceptionFilter: JwtExceptionFilter
 ) {
 
     @Bean
@@ -53,12 +57,13 @@ class SecurityConfig (
                     .anyRequest().authenticated()
             }
 
-            .addFilterBefore(JwtAuthenticationFilter(jwtUtils, objectMapper), UsernamePasswordAuthenticationFilter::class.java)
-
             .exceptionHandling {
-                it.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.NOT_FOUND))
+                it.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                it.accessDeniedHandler(jwtAccessDeniedHandler)
             }
 
+            .addFilterBefore(JwtAuthenticationFilter(jwtUtils, objectMapper), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter::class.java)
             .build()
     }
 

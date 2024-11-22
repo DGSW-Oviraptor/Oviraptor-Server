@@ -1,8 +1,9 @@
-package dev.yeseong0412.authtemplate.global.auth.jwt
+package dev.yeseong0412.authtemplate.global.security.jwt.filter
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import dev.yeseong0412.authtemplate.global.auth.jwt.exception.JwtErrorCode
-import dev.yeseong0412.authtemplate.global.auth.jwt.exception.type.JwtErrorType
+import dev.yeseong0412.authtemplate.global.security.jwt.util.JwtUtils
+import dev.yeseong0412.authtemplate.global.security.jwt.exception.JwtErrorCode
+import dev.yeseong0412.authtemplate.global.security.jwt.exception.type.JwtErrorType
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest

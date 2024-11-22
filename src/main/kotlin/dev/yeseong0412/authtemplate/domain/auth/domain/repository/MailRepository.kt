@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.domain.user.domain.repository
+package dev.yeseong0412.authtemplate.domain.auth.domain.repository
 
 interface MailRepository {
     fun save(email: String, authCode: String)

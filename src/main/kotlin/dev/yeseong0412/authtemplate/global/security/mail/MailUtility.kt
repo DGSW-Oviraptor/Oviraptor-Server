@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.global.auth.mail
+package dev.yeseong0412.authtemplate.global.security.mail
 
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper

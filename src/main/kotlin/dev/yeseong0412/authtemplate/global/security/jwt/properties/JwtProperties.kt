@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.global.auth.jwt
+package dev.yeseong0412.authtemplate.global.security.jwt.properties
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component

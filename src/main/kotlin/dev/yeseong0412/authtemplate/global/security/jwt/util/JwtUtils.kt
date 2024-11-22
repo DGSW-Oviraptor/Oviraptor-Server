@@ -1,7 +1,9 @@
-package dev.yeseong0412.authtemplate.global.auth.jwt
+package dev.yeseong0412.authtemplate.global.security.jwt.util
 
 import dev.yeseong0412.authtemplate.domain.user.domain.model.User
-import dev.yeseong0412.authtemplate.global.auth.jwt.exception.type.JwtErrorType
+import dev.yeseong0412.authtemplate.global.security.jwt.properties.JwtProperties
+import dev.yeseong0412.authtemplate.global.security.jwt.dto.JwtInfo
+import dev.yeseong0412.authtemplate.global.security.jwt.exception.type.JwtErrorType
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException

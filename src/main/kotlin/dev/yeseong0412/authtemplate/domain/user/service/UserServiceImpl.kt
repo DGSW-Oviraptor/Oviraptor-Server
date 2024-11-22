@@ -1,102 +1,21 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
-import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
-import dev.yeseong0412.authtemplate.domain.user.exception.EmailErrorCode
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
-import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.response.UserInfo
-import dev.yeseong0412.authtemplate.domain.user.domain.repository.MailRepository
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*
-import dev.yeseong0412.authtemplate.global.auth.jwt.JwtInfo
-import dev.yeseong0412.authtemplate.global.auth.jwt.JwtUtils
-import dev.yeseong0412.authtemplate.global.auth.mail.MailUtility
-import dev.yeseong0412.authtemplate.global.auth.jwt.exception.JwtErrorCode
-import dev.yeseong0412.authtemplate.global.auth.jwt.exception.type.JwtErrorType
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val userMapper: UserMapper,
-    private val mailRepository: MailRepository,
-    private val bytePasswordEncoder: BCryptPasswordEncoder,
-    private val jwtUtils: JwtUtils,
-    private val mailUtils: MailUtility
+    private val bytePasswordEncoder: BCryptPasswordEncoder
 ) : UserService {
-
-    @Transactional
-    override fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit> {
-        if (mailRepository.findByEmail(registerUserRequest.email).isNullOrEmpty() || mailRepository.findByEmail(
-                registerUserRequest.email
-            ) != registerUserRequest.authCode
-        ) {
-            throw CustomException(EmailErrorCode.AUTHENTICODE_INVALID)
-        }
-
-        if (userRepository.existsByEmail(registerUserRequest.email)) {
-            throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
-        }
-
-        if (registerUserRequest.name.isEmpty()) {
-            throw CustomException(UserErrorCode.USERNAME_INVALID)
-        }
-
-        if (registerUserRequest.password.isEmpty()) {
-            throw CustomException(UserErrorCode.PASSWORD_INVALID)
-        }
-
-        val user = UserEntity(
-            email = registerUserRequest.email,
-            name = registerUserRequest.name,
-            password = bytePasswordEncoder.encode(registerUserRequest.password)
-        )
-        userRepository.save(user)
-
-        mailRepository.deleteByEmail(registerUserRequest.email)
-
-        return BaseResponse(message = "success")
-    }
-
-    @Transactional(readOnly = true)
-    override fun loginUser(loginRequest: LoginRequest): BaseResponse<JwtInfo> {
-        val user = userRepository.findByEmail(loginRequest.email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
-
-        if (!bytePasswordEncoder.matches(loginRequest.password, user.password)) throw CustomException(UserErrorCode.USER_NOT_MATCH)
-
-        return BaseResponse(
-            message = "로그인 성공",
-            data = jwtUtils.generate(
-                user = userMapper.toDomain(user)
-            )
-        )
-    }
-
-    @Transactional(readOnly = true)
-    override fun refreshToken(refreshRequest: RefreshRequest): BaseResponse<String> {
-        val token = jwtUtils.getToken(refreshRequest.refreshToken)
-
-        if (jwtUtils.checkTokenInfo(token) == JwtErrorType.ExpiredJwtException) {
-            throw CustomException(JwtErrorCode.JWT_TOKEN_EXPIRED)
-        }
-
-        val user = userRepository.findByEmail(
-            jwtUtils.getUsername(token)
-        )
-
-        return BaseResponse(
-            message = "리프레시 성공 !",
-            data = jwtUtils.refreshToken(
-                user = userMapper.toDomain(user!!)
-            )
-        )
-    }
 
     override fun getAllRooms(userId: Long): BaseResponse<List<ChatRoomInfo>> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
@@ -213,20 +132,6 @@ class UserServiceImpl(
         )
     }
 
-    override fun sendMail(email: String): BaseResponse<Unit> {
-
-        if (!isValidEmail(email)) {
-            throw CustomException(EmailErrorCode.EMAIL_INVALID)
-        }
-        val authCode = mailUtils.sendMail(email)
-
-        mailRepository.save(email, authCode)
-
-        return BaseResponse(
-            message = "success"
-        )
-    }
-
     override fun deleteUser(userId: Long, deleteUserRequest: DeleteUserRequest): BaseResponse<Unit> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         if (!bytePasswordEncoder.matches(deleteUserRequest.password, user.password)) throw CustomException(UserErrorCode.PASSWORD_NOT_MATCH)
@@ -238,10 +143,5 @@ class UserServiceImpl(
         return BaseResponse(
             message = "success"
         )
-    }
-
-    fun isValidEmail(email: String): Boolean {
-        val regex = "^[A-Za-z0-9+_.-]+@(.+)$".toRegex() // 이메일 형식 검증
-        return email.matches(regex)
     }
 }

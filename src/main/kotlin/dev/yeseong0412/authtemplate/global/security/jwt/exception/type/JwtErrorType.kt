@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.global.auth.jwt.exception.type
+package dev.yeseong0412.authtemplate.global.security.jwt.exception.type
 
 enum class JwtErrorType {
     OK,

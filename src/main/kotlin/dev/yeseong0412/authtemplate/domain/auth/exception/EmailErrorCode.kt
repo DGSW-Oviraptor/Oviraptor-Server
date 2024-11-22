@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.domain.user.exception
+package dev.yeseong0412.authtemplate.domain.auth.exception
 
 import dev.yeseong0412.authtemplate.global.exception.CustomErrorCode
 import org.springframework.http.HttpStatus
