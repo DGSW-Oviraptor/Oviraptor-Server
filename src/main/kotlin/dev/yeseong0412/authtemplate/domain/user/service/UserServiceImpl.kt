@@ -10,6 +10,7 @@ import dev.yeseong0412.authtemplate.global.exception.CustomException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserServiceImpl(
@@ -17,6 +18,7 @@ class UserServiceImpl(
     private val bytePasswordEncoder: BCryptPasswordEncoder
 ) : UserService {
 
+    @Transactional(readOnly = true)
     override fun getAllRooms(userId: Long): BaseResponse<List<ChatRoomInfo>> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val rooms = user.rooms
@@ -32,6 +34,7 @@ class UserServiceImpl(
         )
     }
 
+    @Transactional(readOnly = true)
     override fun getUserInfo(userId: Long): BaseResponse<UserInfo> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val userInfo = UserInfo(email = user.email, name = user.name, role = user.role)
@@ -42,6 +45,7 @@ class UserServiceImpl(
         )
     }
 
+    @Transactional
     override fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserInfo> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
 
@@ -63,6 +67,7 @@ class UserServiceImpl(
         )
     }
 
+    @Transactional
     override fun changePassword(userId: Long, changePasswordRequest: ChangePasswordRequest): BaseResponse<Unit> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
 
@@ -81,6 +86,7 @@ class UserServiceImpl(
         )
     }
 
+    @Transactional
     override fun addFriend(userId: Long, email: String): BaseResponse<UserInfo> {
         val user = userRepository.findByIdOrNull(userId) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
         val friend = userRepository.findByEmail(email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
@@ -99,6 +105,7 @@ class UserServiceImpl(
         )
     }
 
+    @Transactional(readOnly = true)
     override fun getAllFriends(userId: Long): BaseResponse<List<UserInfo>> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val friends = user.friends
@@ -109,6 +116,7 @@ class UserServiceImpl(
         )
     }
 
+    @Transactional
     override fun deleteFried(userId: Long, email: String): BaseResponse<Unit> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val friend = userRepository.findByEmail(email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
@@ -124,6 +132,7 @@ class UserServiceImpl(
         )
     }
 
+    @Transactional(readOnly = true)
     override fun searchByUsername(username: String): BaseResponse<List<UserInfo>> {
         val user = userRepository.findAllByNameContaining(username)
         return BaseResponse(
@@ -132,12 +141,13 @@ class UserServiceImpl(
         )
     }
 
+    @Transactional
     override fun deleteUser(userId: Long, deleteUserRequest: DeleteUserRequest): BaseResponse<Unit> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         if (!bytePasswordEncoder.matches(deleteUserRequest.password, user.password)) throw CustomException(UserErrorCode.PASSWORD_NOT_MATCH)
 
-        user.friends.map { it -> it.friends.remove(user) }
-        user.rooms.map { it ->  it.participants.remove(user) }
+        user.friends.map { it.friends.remove(user) }
+        user.rooms.map { it.participants.remove(user) }
         userRepository.delete(user)
 
         return BaseResponse(

@@ -18,6 +18,7 @@ import org.bson.types.ObjectId
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ChatRoomServiceImpl(
@@ -27,6 +28,7 @@ class ChatRoomServiceImpl(
     private val jwtUtils: JwtUtils
 ) : ChatRoomService {
 
+    @Transactional(readOnly = true)
     override fun getAllRooms(): BaseResponse<List<ChatRoomInfo>> {
         val rooms = chatRoomRepository.findAll()
         return BaseResponse(
@@ -35,6 +37,7 @@ class ChatRoomServiceImpl(
         )
     }
 
+    @Transactional
     override fun createRoom(name: String, userId: Long): BaseResponse<ChatRoomInfo> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val room = ChatRoomEntity(name = name, participants = mutableSetOf(user))
@@ -49,9 +52,9 @@ class ChatRoomServiceImpl(
         )
     }
 
+    @Transactional
     override fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoomInfo> {
-        val room =
-            chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val room = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
         val user = userRepository.findByEmail(userEmail) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 
         if (room.participants.size >= 8) throw CustomException(ChatRoomErrorCode.CHAT_ROOM_NUMBER_LIMIT_EXCEEDED)
@@ -67,9 +70,9 @@ class ChatRoomServiceImpl(
         )
     }
 
+    @Transactional
     override fun deleteRoom(roomId: Long): BaseResponse<Unit> {
-        val room =
-            chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val room = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
 
         room.participants.forEach { user -> user.rooms.remove(room) }
 
@@ -80,6 +83,7 @@ class ChatRoomServiceImpl(
         )
     }
 
+    @Transactional(readOnly = true)
     override fun getRoomInfo(roomId: Long): BaseResponse<ChatRoomInfo> {
         val roomInfo = chatRoomRepository.findById(roomId)
             .map { ChatRoomInfo(id = it.id, name = it.name, participants = it.participants.map { pr -> pr.name }) }
@@ -91,14 +95,15 @@ class ChatRoomServiceImpl(
         )
     }
 
+    @Transactional(readOnly = true)
     override fun enterRoom(roomId: Long, userId: Long): ChatOnline {
-        val room =
-            chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val room = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
 
         return ChatOnline(writer = "시스템", message = "${user.name} 님이 ${room.name}에 입장하셨습니다.")
     }
 
+    @Transactional
     override fun exitRoom(roomId: Long, userId: Long): ChatOnline {
         val room = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
@@ -113,6 +118,7 @@ class ChatRoomServiceImpl(
         return ChatOnline(writer = "시스템", message = "${user.name} 님이 ${room.name}에서 퇴장하셨습니다.")
     }
 
+    @Transactional
     override fun sendChat(roomId: Long, token: String, message: ChatMessage): ChatOnline {
         val user = userRepository.findByEmail(jwtUtils.getUsername(token))
 
@@ -122,6 +128,7 @@ class ChatRoomServiceImpl(
         return ChatOnline(writer = user.name, message = message.message)
     }
 
+    @Transactional(readOnly = true)
     override fun getAllMessages(roomId: Long, objectId: String?, userId: Long): BaseResponse<List<ChatMessageInfo>> {
         val room = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
