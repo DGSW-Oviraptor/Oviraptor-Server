@@ -13,7 +13,6 @@ import dev.yeseong0412.authtemplate.global.security.jwt.dto.JwtInfo
 import dev.yeseong0412.authtemplate.global.security.jwt.exception.JwtErrorCode
 import dev.yeseong0412.authtemplate.global.security.jwt.exception.type.JwtErrorType
 import dev.yeseong0412.authtemplate.global.security.jwt.util.JwtUtils
-import dev.yeseong0412.authtemplate.global.security.mail.MailUtility
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -26,7 +25,6 @@ class AuthServiceImpl(
     private val userRepository: UserRepository,
     private val mailRepository: MailRepository,
     private val jwtUtils: JwtUtils,
-    private val mailUtils: MailUtility,
     private val bytePasswordEncoder: BCryptPasswordEncoder
 ) : AuthService {
 

@@ -35,12 +35,4 @@ class AuthController(
     fun refreshUser(@RequestBody refreshRequest: RefreshRequest): BaseResponse<String> {
         return authService.refreshToken(refreshRequest)
     }
-
-    @Operation(summary = "인증코드 받기")
-    @GetMapping("/email")
-    fun sendMail(
-        @RequestParam email: String
-    ): BaseResponse<Unit> {
-        return authService.sendMail(email)
-    }
 }

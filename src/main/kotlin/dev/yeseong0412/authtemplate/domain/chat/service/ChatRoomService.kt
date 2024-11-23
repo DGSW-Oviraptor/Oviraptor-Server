@@ -8,8 +8,8 @@ import dev.yeseong0412.authtemplate.global.common.BaseResponse
 
 interface ChatRoomService {
     fun getAllRooms(): BaseResponse<List<ChatRoomInfo>>
-    fun createRoom(name: String, userId: Long): BaseResponse<ChatRoomInfo>
-    fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoomInfo>
+    fun createRoom(name: String, userId: Long): BaseResponse<Unit>
+    fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<Unit>
     fun deleteRoom(roomId: Long): BaseResponse<Unit>
     fun getRoomInfo(roomId: Long): BaseResponse<ChatRoomInfo>
     fun enterRoom(roomId: Long, userId: Long): ChatOnline

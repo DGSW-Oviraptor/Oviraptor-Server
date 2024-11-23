@@ -1,12 +1,17 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
+import dev.yeseong0412.authtemplate.domain.auth.exception.EmailErrorCode
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.mail.domain.repository.MailRepository
+import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.response.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException
+import dev.yeseong0412.authtemplate.global.security.jwt.dto.JwtInfo
+import dev.yeseong0412.authtemplate.global.security.jwt.util.JwtUtils
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -15,7 +20,10 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
-    private val bytePasswordEncoder: BCryptPasswordEncoder
+    private val mailRepository: MailRepository,
+    private val bytePasswordEncoder: BCryptPasswordEncoder,
+    private val jwtUtils: JwtUtils,
+    private val userMapper: UserMapper
 ) : UserService {
 
     @Transactional(readOnly = true)
@@ -46,24 +54,42 @@ class UserServiceImpl(
     }
 
     @Transactional
-    override fun changeUserInfo(userId: Long, changeInfoRequest: ChangeInfoRequest): BaseResponse<UserInfo> {
+    override fun changeUsername(userId: Long, username: String): BaseResponse<Unit> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
 
-        if (userRepository.existsByEmail(changeInfoRequest.email) && user.email != changeInfoRequest.email) throw CustomException(
-            UserErrorCode.USER_ALREADY_EXIST
-        )
-        if (changeInfoRequest.email != "") {
-            user.email = changeInfoRequest.email
-        }
-        if (changeInfoRequest.name != "") {
-            user.name = changeInfoRequest.name
+        if (username.isNotBlank()) {
+            user.name = username
+            userRepository.save(user)
         }
 
+        return BaseResponse(
+            message = "success"
+        )
+    }
+
+    @Transactional
+    override fun changeEmail(userId: Long, request: ChangeEmailRequest): BaseResponse<JwtInfo> {
+        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
+
+        if (mailRepository.findByEmail(request.email).isNullOrEmpty() || mailRepository.findByEmail(
+                request.email
+            ) != request.authCode
+        ) {
+            throw CustomException(EmailErrorCode.AUTHENTICODE_INVALID)
+        }
+
+        if (userRepository.existsByEmail(request.email)) {
+            throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
+        }
+
+        user.email = request.email
         userRepository.save(user)
 
         return BaseResponse(
             message = "success",
-            data = UserInfo(email = user.email, name = user.name, role = user.role)
+            data = jwtUtils.generate(
+                user = userMapper.toDomain(user)
+            )
         )
     }
 
@@ -87,7 +113,7 @@ class UserServiceImpl(
     }
 
     @Transactional
-    override fun addFriend(userId: Long, email: String): BaseResponse<UserInfo> {
+    override fun addFriend(userId: Long, email: String): BaseResponse<Unit> {
         val user = userRepository.findByIdOrNull(userId) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
         val friend = userRepository.findByEmail(email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
         if (user == friend || user.friends.contains(friend)) {
@@ -100,8 +126,7 @@ class UserServiceImpl(
         userRepository.save(friend)
 
         return BaseResponse(
-            message = "success",
-            data = UserInfo(email = friend.email, name = friend.name, role = user.role)
+            message = "success"
         )
     }
 
@@ -117,7 +142,7 @@ class UserServiceImpl(
     }
 
     @Transactional
-    override fun deleteFried(userId: Long, email: String): BaseResponse<Unit> {
+    override fun deleteFriend(userId: Long, email: String): BaseResponse<Unit> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val friend = userRepository.findByEmail(email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 

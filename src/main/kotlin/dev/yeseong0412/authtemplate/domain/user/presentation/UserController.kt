@@ -6,6 +6,7 @@ import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*
 import dev.yeseong0412.authtemplate.domain.user.service.UserService
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
+import dev.yeseong0412.authtemplate.global.security.jwt.dto.JwtInfo
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.web.bind.annotation.*
 
@@ -27,13 +28,16 @@ class UserController(
         return userService.getUserInfo(userId)
     }
 
-    @Operation(summary = "내 정보 수정")
-    @PatchMapping("/info")
-    fun changeUserInfo(
-        @GetAuthenticatedId userId: Long,
-        @RequestBody changeInfoRequest: ChangeInfoRequest
-    ): BaseResponse<UserInfo> {
-        return userService.changeUserInfo(userId, changeInfoRequest)
+    @Operation(summary = "이름 수정")
+    @PatchMapping("/info/name")
+    fun changeUsername(@GetAuthenticatedId userId: Long, @RequestParam username: String): BaseResponse<Unit> {
+        return userService.changeUsername(userId, username)
+    }
+
+    @Operation(summary = "이메일 수정")
+    @PatchMapping("/info/email")
+    fun changeEmail(@GetAuthenticatedId userId: Long, @RequestBody request: ChangeEmailRequest): BaseResponse<JwtInfo> {
+        return userService.changeEmail(userId, request)
     }
 
     @Operation(summary = "비밀번호 수정")
@@ -47,7 +51,7 @@ class UserController(
 
     @Operation(summary = "친구추가")
     @PostMapping("/friends/add")
-    fun addFriend(@GetAuthenticatedId userId: Long, @RequestParam email: String): BaseResponse<UserInfo> {
+    fun addFriend(@GetAuthenticatedId userId: Long, @RequestParam email: String): BaseResponse<Unit> {
         return userService.addFriend(userId, email)
     }
 
@@ -60,7 +64,7 @@ class UserController(
     @Operation(summary = "친구 삭제")
     @DeleteMapping("/friends/delete")
     fun deleteFriend(@GetAuthenticatedId userId: Long, @RequestParam email: String): BaseResponse<Unit> {
-        return userService.deleteFried(userId, email)
+        return userService.deleteFriend(userId, email)
     }
 
     @Operation(summary = "이름으로 검색")

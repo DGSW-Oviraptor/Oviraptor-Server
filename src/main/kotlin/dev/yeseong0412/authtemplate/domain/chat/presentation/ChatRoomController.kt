@@ -26,13 +26,13 @@ class ChatRoomController(
 
     @Operation(summary = "방 생성")
     @PostMapping("/create")
-    fun createRoom(@RequestParam name: String, @GetAuthenticatedId userId: Long): BaseResponse<ChatRoomInfo> {
+    fun createRoom(@RequestParam name: String, @GetAuthenticatedId userId: Long): BaseResponse<Unit> {
         return chatRoomService.createRoom(name, userId)
     }
 
     @Operation(summary = "초대")
     @PostMapping("/rooms/{roomId}/invite")
-    fun inviteToRoom(@PathVariable roomId: Long, @RequestParam participant: String): BaseResponse<ChatRoomInfo> {
+    fun inviteToRoom(@PathVariable roomId: Long, @RequestParam participant: String): BaseResponse<Unit> {
         return chatRoomService.inviteToRoom(roomId, participant)
     }
 

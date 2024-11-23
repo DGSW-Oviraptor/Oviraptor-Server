@@ -38,7 +38,7 @@ class ChatRoomServiceImpl(
     }
 
     @Transactional
-    override fun createRoom(name: String, userId: Long): BaseResponse<ChatRoomInfo> {
+    override fun createRoom(name: String, userId: Long): BaseResponse<Unit> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val room = ChatRoomEntity(name = name, participants = mutableSetOf(user))
 
@@ -47,13 +47,12 @@ class ChatRoomServiceImpl(
         userRepository.save(user)
 
         return BaseResponse(
-            message = "success",
-            data = ChatRoomInfo(id = room.id, name = room.name, participants = room.participants.map { it.name })
+            message = "success"
         )
     }
 
     @Transactional
-    override fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<ChatRoomInfo> {
+    override fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<Unit> {
         val room = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
         val user = userRepository.findByEmail(userEmail) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 
@@ -65,8 +64,7 @@ class ChatRoomServiceImpl(
         userRepository.save(user)
 
         return BaseResponse(
-            message = "success",
-            data = ChatRoomInfo(id = room.id, name = room.name, participants = room.participants.map { it.name })
+            message = "success"
         )
     }
 
