@@ -1,4 +1,4 @@
-package dev.yeseong0412.authtemplate.domain.auth.domain.repository
+package dev.yeseong0412.authtemplate.domain.mail.domain.repository
 
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository

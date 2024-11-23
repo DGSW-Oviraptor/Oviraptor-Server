@@ -10,5 +10,4 @@ interface AuthService {
     fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit>
     fun loginUser(loginRequest: LoginRequest): BaseResponse<JwtInfo>
     fun refreshToken(refreshRequest: RefreshRequest): BaseResponse<String>
-    fun sendMail(email: String): BaseResponse<Unit>
 }

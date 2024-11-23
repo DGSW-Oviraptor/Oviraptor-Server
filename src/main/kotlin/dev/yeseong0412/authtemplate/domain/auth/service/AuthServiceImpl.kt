@@ -5,7 +5,7 @@ import dev.yeseong0412.authtemplate.domain.auth.presentation.dto.request.Refresh
 import dev.yeseong0412.authtemplate.domain.auth.presentation.dto.request.RegisterUserRequest
 import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
-import dev.yeseong0412.authtemplate.domain.auth.domain.repository.MailRepository
+import dev.yeseong0412.authtemplate.domain.mail.domain.repository.MailRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.auth.exception.EmailErrorCode
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
@@ -95,24 +95,5 @@ class AuthServiceImpl(
                 user = userMapper.toDomain(user!!)
             )
         )
-    }
-
-    override fun sendMail(email: String): BaseResponse<Unit> {
-
-        if (!isValidEmail(email)) {
-            throw CustomException(EmailErrorCode.EMAIL_INVALID)
-        }
-        val authCode = mailUtils.sendMail(email)
-
-        mailRepository.save(email, authCode)
-
-        return BaseResponse(
-            message = "success"
-        )
-    }
-
-    fun isValidEmail(email: String): Boolean {
-        val regex = "^[A-Za-z0-9+_.-]+@(.+)$".toRegex() // 이메일 형식 검증
-        return email.matches(regex)
     }
 }
