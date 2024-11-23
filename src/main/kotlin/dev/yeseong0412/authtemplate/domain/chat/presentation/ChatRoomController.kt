@@ -56,7 +56,11 @@ class ChatRoomController(
 
     @Operation(summary = "채팅 불러오기", description = "처음 실행할때는 objectId 필요 없음")
     @GetMapping("/{roomId}")
-    fun getAllMessages(@PathVariable roomId: Long, @RequestParam(required = false) objectId: String?, @GetAuthenticatedId userId: Long): BaseResponse<List<ChatMessageInfo>> {
+    fun getAllMessages(
+        @PathVariable roomId: Long,
+        @RequestParam(required = false) objectId: String?,
+        @GetAuthenticatedId userId: Long
+    ): BaseResponse<List<ChatMessageInfo>> {
         return chatRoomService.getAllMessages(roomId, objectId, userId)
     }
 
