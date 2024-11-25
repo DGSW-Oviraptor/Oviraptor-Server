@@ -129,7 +129,6 @@ class ChatRoomServiceImpl(
     @Transactional(readOnly = true)
     override fun getAllMessages(roomId: Long, objectId: String?, userId: Long): BaseResponse<List<ChatMessageInfo>> {
         val room = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
-        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val id = if (objectId != null) ObjectId(objectId) else ObjectId()
         val pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "_id"))
         val messages = chatMessageRepository.findMessagesByRoomIdAndObjectId(roomId, id, pageable)
@@ -137,7 +136,7 @@ class ChatRoomServiceImpl(
                 ChatMessageInfo(
                     id = it.id.toString(),
                     room = room.name,
-                    writer = user.name,
+                    writer = userRepository.findById(it.writerId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }.name,
                     content = it.content,
                     isMine = it.writerId == userId,
                 )

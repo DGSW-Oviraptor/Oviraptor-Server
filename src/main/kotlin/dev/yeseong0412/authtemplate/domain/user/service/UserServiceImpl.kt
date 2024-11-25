@@ -71,6 +71,10 @@ class UserServiceImpl(
     override fun changeEmail(userId: Long, request: ChangeEmailRequest): BaseResponse<JwtInfo> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
 
+        if (userRepository.existsByEmail(request.email)) {
+            throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
+        }
+
         if (mailRepository.findByEmail(request.email).isNullOrEmpty() || mailRepository.findByEmail(
                 request.email
             ) != request.authCode
@@ -78,12 +82,9 @@ class UserServiceImpl(
             throw CustomException(EmailErrorCode.AUTHENTICODE_INVALID)
         }
 
-        if (userRepository.existsByEmail(request.email)) {
-            throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
-        }
-
         user.email = request.email
         userRepository.save(user)
+        mailRepository.deleteByEmail(request.email)
 
         return BaseResponse(
             message = "success",
