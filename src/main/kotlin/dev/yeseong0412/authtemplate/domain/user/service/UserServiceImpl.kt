@@ -170,7 +170,11 @@ class UserServiceImpl(
     @Transactional
     override fun deleteUser(userId: Long, deleteUserRequest: DeleteUserRequest): BaseResponse<Unit> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
-        if (!bytePasswordEncoder.matches(deleteUserRequest.password, user.password)) throw CustomException(UserErrorCode.PASSWORD_NOT_MATCH)
+        if (!bytePasswordEncoder.matches(
+                deleteUserRequest.password,
+                user.password
+            )
+        ) throw CustomException(UserErrorCode.PASSWORD_NOT_MATCH)
 
         user.friends.map { it.friends.remove(user) }
         user.rooms.map { it.participants.remove(user) }

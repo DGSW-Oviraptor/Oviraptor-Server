@@ -29,14 +29,12 @@ class JwtAuthenticationFilter(
             return
         }
 
-        if (path.startsWith("/auth")
-        ) {
+        if (path.startsWith("/auth") || path.startsWith("/mail")) {
             filterChain.doFilter(request, response)
             return
         }
 
-        if (path.startsWith("/ws")
-        ) {
+        if (path.startsWith("/ws")) {
             filterChain.doFilter(request, response)
             return
         }

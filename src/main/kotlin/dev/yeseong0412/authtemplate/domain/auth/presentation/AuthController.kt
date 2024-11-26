@@ -3,8 +3,8 @@ package dev.yeseong0412.authtemplate.domain.auth.presentation
 import dev.yeseong0412.authtemplate.domain.auth.presentation.dto.request.LoginRequest
 import dev.yeseong0412.authtemplate.domain.auth.presentation.dto.request.RefreshRequest
 import dev.yeseong0412.authtemplate.domain.auth.presentation.dto.request.RegisterUserRequest
+import dev.yeseong0412.authtemplate.domain.auth.presentation.dto.response.LoginResponse
 import dev.yeseong0412.authtemplate.domain.auth.service.AuthService
-import dev.yeseong0412.authtemplate.global.security.jwt.dto.JwtInfo
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -26,7 +26,7 @@ class AuthController(
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
-    fun loginUser(@RequestBody loginRequest: LoginRequest): BaseResponse<JwtInfo> {
+    fun loginUser(@RequestBody loginRequest: LoginRequest): BaseResponse<LoginResponse> {
         return authService.loginUser(loginRequest)
     }
 

@@ -8,8 +8,8 @@ import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.mail.domain.repository.MailRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
 import dev.yeseong0412.authtemplate.domain.auth.exception.EmailErrorCode
+import dev.yeseong0412.authtemplate.domain.auth.presentation.dto.response.LoginResponse
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
-import dev.yeseong0412.authtemplate.global.security.jwt.dto.JwtInfo
 import dev.yeseong0412.authtemplate.global.security.jwt.exception.JwtErrorCode
 import dev.yeseong0412.authtemplate.global.security.jwt.exception.type.JwtErrorType
 import dev.yeseong0412.authtemplate.global.security.jwt.util.JwtUtils
@@ -62,15 +62,21 @@ class AuthServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun loginUser(loginRequest: LoginRequest): BaseResponse<JwtInfo> {
+    override fun loginUser(loginRequest: LoginRequest): BaseResponse<LoginResponse> {
         val user = userRepository.findByEmail(loginRequest.email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 
         if (!bytePasswordEncoder.matches(loginRequest.password, user.password)) throw CustomException(UserErrorCode.USER_NOT_MATCH)
 
+        val token = jwtUtils.generate(
+            user = userMapper.toDomain(user)
+        )
+
         return BaseResponse(
             message = "로그인 성공",
-            data = jwtUtils.generate(
-                user = userMapper.toDomain(user)
+            data = LoginResponse(
+                token.accessToken,
+                token.refreshToken,
+                user.name
             )
         )
     }
