@@ -143,6 +143,7 @@ class ChatRoomServiceImpl(
                         .orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }.name,
                     content = it.content,
                     isMine = it.writerId == userId,
+                    timestamp = it.timestamp
                 )
             }
 
