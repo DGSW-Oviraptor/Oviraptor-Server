@@ -18,8 +18,8 @@ class UserController(
 
     @Operation(summary = "내 방 목록")
     @GetMapping("/rooms")
-    fun getAllRooms(@GetAuthenticatedId userId: Long): BaseResponse<List<ChatRoomInfo>> {
-        return userService.getAllRooms(userId)
+    fun getMyRooms(@GetAuthenticatedId userId: Long): BaseResponse<List<ChatRoomInfo>> {
+        return userService.getMyRooms(userId)
     }
 
     @Operation(summary = "내 정보")

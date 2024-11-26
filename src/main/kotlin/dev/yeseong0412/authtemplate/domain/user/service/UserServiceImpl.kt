@@ -27,7 +27,7 @@ class UserServiceImpl(
 ) : UserService {
 
     @Transactional(readOnly = true)
-    override fun getAllRooms(userId: Long): BaseResponse<List<ChatRoomInfo>> {
+    override fun getMyRooms(userId: Long): BaseResponse<List<ChatRoomInfo>> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val rooms = user.rooms
 

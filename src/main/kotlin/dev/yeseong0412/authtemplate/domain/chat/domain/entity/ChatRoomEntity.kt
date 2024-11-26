@@ -13,5 +13,6 @@ class ChatRoomEntity(
     val name: String, // Email
 
     @ManyToMany(mappedBy = "rooms", fetch = FetchType.LAZY)
-    val participants: MutableSet<UserEntity> = mutableSetOf()
+    val participants: MutableSet<UserEntity> = mutableSetOf(),
+
 )

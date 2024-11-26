@@ -139,6 +139,7 @@ class ChatRoomServiceImpl(
                     writer = userRepository.findById(it.writerId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }.name,
                     content = it.content,
                     isMine = it.writerId == userId,
+                    timestamp = it.timestamp
                 )
             }
 
