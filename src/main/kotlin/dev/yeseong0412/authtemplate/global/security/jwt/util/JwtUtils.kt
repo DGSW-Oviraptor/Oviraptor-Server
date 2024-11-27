@@ -22,7 +22,7 @@ import javax.crypto.spec.SecretKeySpec
 @Component
 class JwtUtils(
     private val jwtProperties: JwtProperties,
-    private val userDetailsService: UserDetailsService,
+    private val userDetailsService: UserDetailsService
 ) {
 
     private val secretKey: SecretKey = SecretKeySpec(

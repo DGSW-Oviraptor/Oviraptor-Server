@@ -9,8 +9,8 @@ import java.time.LocalDateTime
 class ChatMessageEntity(
     @Id
     val id: ObjectId? = null,
-    var roomId: Long,
-    var writerId: Long,
+    val roomId: Long,
+    val writerId: Long,
     var content: String,
-    var timestamp: LocalDateTime = LocalDateTime.now(),
+    var timestamp: LocalDateTime = LocalDateTime.now()
 )

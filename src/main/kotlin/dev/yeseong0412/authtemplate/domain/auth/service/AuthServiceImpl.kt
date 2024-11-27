@@ -30,15 +30,15 @@ class AuthServiceImpl(
 
     @Transactional
     override fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit> {
+        if (userRepository.existsByEmail(registerUserRequest.email)) {
+            throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
+        }
+
         if (mailRepository.findByEmail(registerUserRequest.email).isNullOrEmpty() || mailRepository.findByEmail(
                 registerUserRequest.email
             ) != registerUserRequest.authCode
         ) {
             throw CustomException(EmailErrorCode.AUTHENTICODE_INVALID)
-        }
-
-        if (userRepository.existsByEmail(registerUserRequest.email)) {
-            throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
         }
 
         if (registerUserRequest.name.isEmpty()) {
