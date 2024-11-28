@@ -4,13 +4,15 @@ import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatMe
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.request.ChatMessage
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatOnline
+import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoom
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 
 interface ChatRoomService {
-    fun getAllRooms(): BaseResponse<List<ChatRoomInfo>>
+    fun getAllRooms(): BaseResponse<List<ChatRoom>>
     fun createRoom(name: String, userId: Long): BaseResponse<Unit>
     fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<Unit>
-    fun deleteRoom(roomId: Long): BaseResponse<Unit>
+    fun leaveRoom(roomId: Long, userId: Long): BaseResponse<Unit>
+    fun deleteRoom(roomId: Long, userId: Long): BaseResponse<Unit>
     fun getRoomInfo(roomId: Long): BaseResponse<ChatRoomInfo>
     fun enterRoom(roomId: Long, userId: Long): ChatOnline
     fun exitRoom(roomId: Long, userId: Long): ChatOnline

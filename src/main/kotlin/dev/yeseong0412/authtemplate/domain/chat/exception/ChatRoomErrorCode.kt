@@ -9,5 +9,6 @@ enum class ChatRoomErrorCode(
     override val message: String
 ) : CustomErrorCode {
     CHAT_ROOM_NUMBER_LIMIT_EXCEEDED(HttpStatus.METHOD_NOT_ALLOWED, "METHOD_NOT_ALLOWED", "방의 최대 인원을 초과했습니다."),
-    CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "NOT_FOUND", "방을 찾을 수 없습니다.")
+    CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "NOT_FOUND", "방을 찾을 수 없습니다."),
+    CANNOT_DELETE_CHATROOM(HttpStatus.FORBIDDEN, "FORBIDDEN", "방을 삭제할 수 없습니다.")
 }

@@ -1,7 +1,7 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
 import dev.yeseong0412.authtemplate.domain.auth.exception.EmailErrorCode
-import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoom
 import dev.yeseong0412.authtemplate.domain.mail.domain.repository.MailRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
@@ -27,17 +27,18 @@ class UserServiceImpl(
 ) : UserService {
 
     @Transactional(readOnly = true)
-    override fun getMyRooms(userId: Long): BaseResponse<List<ChatRoomInfo>> {
+    override fun getMyRooms(userId: Long): BaseResponse<List<ChatRoom>> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val rooms = user.rooms
 
         return BaseResponse(
             message = "success",
             data = rooms.map {
-                ChatRoomInfo(
+                ChatRoom(
                     id = it.id,
                     name = it.name,
-                    participants = it.participants.map { pr -> pr.name })
+                    participants = it.participants.map { pr -> pr.name }
+                )
             }
         )
     }

@@ -4,6 +4,7 @@ import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatMe
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.request.ChatMessage
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatOnline
+import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoom
 import dev.yeseong0412.authtemplate.domain.chat.service.ChatRoomService
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.common.annotation.GetAuthenticatedId
@@ -22,7 +23,7 @@ class ChatRoomController(
 
     @Operation(summary = "방 목록")
     @GetMapping("/rooms")
-    fun getAllRooms(): BaseResponse<List<ChatRoomInfo>> = chatRoomService.getAllRooms()
+    fun getAllRooms(): BaseResponse<List<ChatRoom>> = chatRoomService.getAllRooms()
 
     @Operation(summary = "방 생성")
     @PostMapping("/create")
@@ -36,10 +37,16 @@ class ChatRoomController(
         return chatRoomService.inviteToRoom(roomId, participant)
     }
 
+    @Operation(summary = "방 나가기")
+    @DeleteMapping("/rooms/{roomId}/leave")
+    fun leaveRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): BaseResponse<Unit> {
+        return chatRoomService.leaveRoom(roomId, userId)
+    }
+
     @Operation(summary = "방 삭제")
-    @DeleteMapping("/rooms/{roomId}")
-    fun deleteRoom(@PathVariable roomId: Long): BaseResponse<Unit> {
-        return chatRoomService.deleteRoom(roomId)
+    @DeleteMapping("/rooms/{roomId}/delete")
+    fun deleteRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): BaseResponse<Unit> {
+        return chatRoomService.deleteRoom(roomId = roomId, userId = userId)
     }
 
     @Operation(summary = "방 정보")

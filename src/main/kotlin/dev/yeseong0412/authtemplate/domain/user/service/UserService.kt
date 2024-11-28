@@ -1,13 +1,13 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
-import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoom
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.response.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.security.jwt.dto.JwtInfo
 
 interface UserService {
-    fun getMyRooms(userId: Long): BaseResponse<List<ChatRoomInfo>>
+    fun getMyRooms(userId: Long): BaseResponse<List<ChatRoom>>
     fun getUserInfo(userId: Long): BaseResponse<UserInfo>
     fun changeUsername(userId: Long, username: String): BaseResponse<Unit>
     fun changeEmail(userId: Long, request: ChangeEmailRequest): BaseResponse<JwtInfo>

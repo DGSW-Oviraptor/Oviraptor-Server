@@ -1,6 +1,6 @@
 package dev.yeseong0412.authtemplate.domain.user.presentation
 
-import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoomInfo
+import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoom
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.response.UserInfo
 import dev.yeseong0412.authtemplate.domain.user.presentation.dto.request.*
 import dev.yeseong0412.authtemplate.domain.user.service.UserService
@@ -18,7 +18,7 @@ class UserController(
 
     @Operation(summary = "내 방 목록")
     @GetMapping("/rooms")
-    fun getMyRooms(@GetAuthenticatedId userId: Long): BaseResponse<List<ChatRoomInfo>> {
+    fun getMyRooms(@GetAuthenticatedId userId: Long): BaseResponse<List<ChatRoom>> {
         return userService.getMyRooms(userId)
     }
 

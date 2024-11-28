@@ -15,4 +15,6 @@ class ChatRoomEntity(
     @ManyToMany(mappedBy = "rooms", fetch = FetchType.LAZY)
     val participants: MutableSet<UserEntity> = mutableSetOf(),
 
+    @Column(nullable = false)
+    val adminId: Long
 )

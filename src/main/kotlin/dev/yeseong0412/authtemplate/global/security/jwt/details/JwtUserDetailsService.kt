@@ -17,10 +17,6 @@ class JwtUserDetailsService(
 
     @Transactional(readOnly = true)
     override fun loadUserByUsername(email: String): UserDetails {
-        println("hihi")
-        if (userRepository.existsByEmail(email)) {
-            println("exists")
-        }
         return JwtUserDetails(
             user = userMapper.toDomain(
                 entity = userRepository.findByEmail(email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
