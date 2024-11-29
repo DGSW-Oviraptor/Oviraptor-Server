@@ -1,6 +1,7 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
 import dev.yeseong0412.authtemplate.domain.auth.exception.EmailErrorCode
+import dev.yeseong0412.authtemplate.domain.chat.domain.repository.ChatMessageRepository
 import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoom
 import dev.yeseong0412.authtemplate.domain.mail.domain.repository.MailRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
@@ -22,6 +23,7 @@ class UserServiceImpl(
     private val userRepository: UserRepository,
     private val mailRepository: MailRepository,
     private val bytePasswordEncoder: BCryptPasswordEncoder,
+    private val chatMessageRepository: ChatMessageRepository,
     private val jwtUtils: JwtUtils,
     private val userMapper: UserMapper
 ) : UserService {
@@ -37,7 +39,8 @@ class UserServiceImpl(
                 ChatRoom(
                     id = it.id,
                     name = it.name,
-                    participants = it.participants.map { pr -> pr.name }
+                    participants = it.participants.map { pr -> pr.name },
+                    lastMessage = chatMessageRepository.findFirstByRoomIdOrderByIdDesc(it.id ?: 0)?.content ?: ""
                 )
             }
         )
