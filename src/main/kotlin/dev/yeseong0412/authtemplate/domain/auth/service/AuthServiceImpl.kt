@@ -41,18 +41,18 @@ class AuthServiceImpl(
             throw CustomException(EmailErrorCode.AUTHENTICODE_INVALID)
         }
 
-        if (registerUserRequest.name.isEmpty()) {
+        if (registerUserRequest.name.isBlank()) {
             throw CustomException(UserErrorCode.USERNAME_INVALID)
         }
 
-        if (registerUserRequest.password.isEmpty()) {
+        if (registerUserRequest.password.isBlank()) {
             throw CustomException(UserErrorCode.PASSWORD_INVALID)
         }
 
         val user = UserEntity(
             email = registerUserRequest.email,
-            name = registerUserRequest.name,
-            password = bytePasswordEncoder.encode(registerUserRequest.password)
+            name = registerUserRequest.name.trim(),
+            password = bytePasswordEncoder.encode(registerUserRequest.password.trim())
         )
         userRepository.save(user)
 

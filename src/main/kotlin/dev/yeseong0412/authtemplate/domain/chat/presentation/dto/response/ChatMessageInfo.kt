@@ -6,5 +6,5 @@ data class ChatMessageInfo(
     val writer: String = "",
     val content: String = "",
     val isMine: Boolean = false,
-    val timestamp: String = "",
+    val timestamp: String = ""
 )

@@ -49,6 +49,9 @@ class ChatRoomServiceImpl(
     @Transactional
     override fun createRoom(name: String, userId: Long): BaseResponse<Unit> {
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
+
+        if (name.isBlank()) throw CustomException(ChatRoomErrorCode.ROOM_NAME_INVALID)
+
         val room = ChatRoomEntity(name = name, participants = mutableSetOf(user), adminId = userId)
 
         chatRoomRepository.save(room)
@@ -100,11 +103,12 @@ class ChatRoomServiceImpl(
     override fun deleteRoom(roomId: Long, userId: Long): BaseResponse<Unit> {
         val room = getRoom(roomId)
 
-
         if (room.adminId != userId) throw CustomException(ChatRoomErrorCode.CANNOT_DELETE_CHATROOM)
 
         room.participants.forEach { user -> user.rooms.remove(room) }
         chatRoomRepository.delete(room)
+
+        chatMessageRepository.deleteAllByRoomId(roomId)
 
         return BaseResponse(
             message = "success"
@@ -183,7 +187,6 @@ class ChatRoomServiceImpl(
             data = messages
         )
     }
-
 
     private fun getRoom(roomId: Long): ChatRoomEntity =
         chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
