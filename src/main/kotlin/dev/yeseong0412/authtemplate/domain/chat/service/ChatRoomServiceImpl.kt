@@ -35,7 +35,14 @@ class ChatRoomServiceImpl(
         val rooms = chatRoomRepository.findAll()
         return BaseResponse(
             message = "success",
-            data = rooms.map { ChatRoom(id = it.id, name = it.name, participants = it.participants.map { pr -> pr.name }, lastMessage =chatMessageRepository.findFirstByRoomIdOrderByIdDesc(it.id?:0)?.content ?: "" ) }
+            data = rooms.map {
+                ChatRoom(
+                    id = it.id,
+                    name = it.name,
+                    participants = it.participants.map { pr -> pr.name },
+                    lastMessage = chatMessageRepository.findFirstByRoomIdOrderByIdDesc(it.id ?: 0)?.content ?: ""
+                )
+            }
         )
     }
 
@@ -107,7 +114,18 @@ class ChatRoomServiceImpl(
     @Transactional(readOnly = true)
     override fun getRoomInfo(roomId: Long): BaseResponse<ChatRoomInfo> {
         val roomInfo = chatRoomRepository.findById(roomId)
-            .map { ChatRoomInfo(id = it.id, name = it.name, participants = it.participants.map { pr -> ParticipantsInfo(id = pr.id, email = pr.email, name = pr.name) }) }
+            .map {
+                ChatRoomInfo(
+                    id = it.id,
+                    name = it.name,
+                    participants = it.participants.map { pr ->
+                        ParticipantsInfo(
+                            id = pr.id,
+                            email = pr.email,
+                            name = pr.name
+                        )
+                    })
+            }
             .orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
 
         return BaseResponse(
@@ -167,5 +185,6 @@ class ChatRoomServiceImpl(
     }
 
 
-    private fun getRoom(roomId : Long) : ChatRoomEntity = chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
+    private fun getRoom(roomId: Long): ChatRoomEntity =
+        chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND) }
 }
