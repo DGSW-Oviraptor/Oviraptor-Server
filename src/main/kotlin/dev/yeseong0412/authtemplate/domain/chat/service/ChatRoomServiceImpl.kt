@@ -52,7 +52,7 @@ class ChatRoomServiceImpl(
 
         if (name.isBlank()) throw CustomException(ChatRoomErrorCode.ROOM_NAME_INVALID)
 
-        val room = ChatRoomEntity(name = name, participants = mutableSetOf(user), adminId = userId)
+        val room = ChatRoomEntity(name = name.trim(), participants = mutableSetOf(user), adminId = userId)
 
         chatRoomRepository.save(room)
         user.rooms.add(room)
