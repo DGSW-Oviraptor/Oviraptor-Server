@@ -29,34 +29,34 @@ class AuthServiceImpl(
 ) : AuthService {
 
     @Transactional
-    override fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit> {
-        if (userRepository.existsByEmail(registerUserRequest.email)) {
+    override fun registerUser(request: RegisterUserRequest): BaseResponse<Unit> {
+        if (userRepository.existsByEmail(request.email)) {
             throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
         }
 
-        if (mailRepository.findByEmail(registerUserRequest.email).isNullOrEmpty() || mailRepository.findByEmail(
-                registerUserRequest.email
-            ) != registerUserRequest.authCode
+        if (!mailRepository.existsByEmail(request.email) || mailRepository.findByEmail(
+                request.email
+            ) != request.authCode
         ) {
             throw CustomException(EmailErrorCode.AUTHENTICODE_INVALID)
         }
 
-        if (registerUserRequest.name.isBlank()) {
+        if (request.name.isBlank()) {
             throw CustomException(UserErrorCode.USERNAME_INVALID)
         }
 
-        if (registerUserRequest.password.isBlank()) {
+        if (request.password.isBlank()) {
             throw CustomException(UserErrorCode.PASSWORD_INVALID)
         }
 
         val user = UserEntity(
-            email = registerUserRequest.email,
-            name = registerUserRequest.name.trim(),
-            password = bytePasswordEncoder.encode(registerUserRequest.password.trim())
+            email = request.email,
+            name = request.name.trim(),
+            password = bytePasswordEncoder.encode(request.password.trim())
         )
         userRepository.save(user)
 
-        mailRepository.deleteByEmail(registerUserRequest.email)
+        mailRepository.deleteByEmail(request.email)
 
         return BaseResponse(message = "success")
     }
