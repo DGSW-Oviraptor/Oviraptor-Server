@@ -35,7 +35,7 @@ class ChatRoomServiceImpl(
         val rooms = chatRoomRepository.findAll()
         return BaseResponse(
             message = "success",
-            data = rooms.map { ChatRoom(id = it.id, name = it.name, participants = it.participants.map { pr -> pr.name }, lastMessage =chatMessageRepository.findFirstByRoomIdOrderByIdDesc(it.id?:0)?.content ?: "No message" ) }
+            data = rooms.map { ChatRoom(id = it.id, name = it.name, participants = it.participants.map { pr -> pr.name }, lastMessage =chatMessageRepository.findFirstByRoomIdOrderByIdDesc(it.id?:0)?.content ?: "" ) }
         )
     }
 
