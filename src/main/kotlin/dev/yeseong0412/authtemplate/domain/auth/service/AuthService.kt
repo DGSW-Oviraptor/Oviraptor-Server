@@ -7,7 +7,7 @@ import dev.yeseong0412.authtemplate.domain.auth.presentation.dto.response.LoginR
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 
 interface AuthService {
-    fun registerUser(registerUserRequest: RegisterUserRequest): BaseResponse<Unit>
-    fun loginUser(loginRequest: LoginRequest): BaseResponse<LoginResponse>
-    fun refreshToken(refreshRequest: RefreshRequest): BaseResponse<String>
+    fun registerUser(request: RegisterUserRequest): BaseResponse<Unit>
+    fun loginUser(request: LoginRequest): BaseResponse<LoginResponse>
+    fun refreshToken(request: RefreshRequest): BaseResponse<String>
 }

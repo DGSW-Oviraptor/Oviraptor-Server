@@ -12,5 +12,5 @@ class ChatMessageEntity(
     val roomId: Long,
     val writerId: Long,
     var content: String,
-    var timestamp: LocalDateTime = LocalDateTime.now()
+    var timestamp: String = LocalDateTime.now().toString()
 )

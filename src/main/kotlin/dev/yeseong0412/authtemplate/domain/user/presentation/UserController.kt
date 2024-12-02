@@ -62,7 +62,7 @@ class UserController(
     }
 
     @Operation(summary = "친구 삭제")
-    @DeleteMapping("/friends/delete")
+    @DeleteMapping("/friends")
     fun deleteFriend(@GetAuthenticatedId userId: Long, @RequestParam email: String): BaseResponse<Unit> {
         return userService.deleteFriend(userId, email)
     }
@@ -74,7 +74,7 @@ class UserController(
     }
 
     @Operation(summary = "회원 탈퇴")
-    @DeleteMapping("/delete")
+    @DeleteMapping
     fun deleteUser(@GetAuthenticatedId userId: Long, @RequestBody deleteUserRequest: DeleteUserRequest): BaseResponse<Unit> {
         return userService.deleteUser(userId, deleteUserRequest)
     }

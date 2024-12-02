@@ -62,10 +62,10 @@ class AuthServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun loginUser(loginRequest: LoginRequest): BaseResponse<LoginResponse> {
-        val user = userRepository.findByEmail(loginRequest.email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
+    override fun loginUser(request: LoginRequest): BaseResponse<LoginResponse> {
+        val user = userRepository.findByEmail(request.email) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
 
-        if (!bytePasswordEncoder.matches(loginRequest.password, user.password)) throw CustomException(UserErrorCode.USER_NOT_MATCH)
+        if (!bytePasswordEncoder.matches(request.password, user.password)) throw CustomException(UserErrorCode.USER_NOT_MATCH)
 
         val token = jwtUtils.generate(
             user = userMapper.toDomain(user)
@@ -82,8 +82,8 @@ class AuthServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun refreshToken(refreshRequest: RefreshRequest): BaseResponse<String> {
-        val token = jwtUtils.getToken(refreshRequest.refreshToken)
+    override fun refreshToken(request: RefreshRequest): BaseResponse<String> {
+        val token = jwtUtils.getToken(request.refreshToken)
 
         if (jwtUtils.checkTokenInfo(token) == JwtErrorType.ExpiredJwtException) {
             throw CustomException(JwtErrorCode.JWT_TOKEN_EXPIRED)

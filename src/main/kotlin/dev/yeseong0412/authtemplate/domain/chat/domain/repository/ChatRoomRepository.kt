@@ -5,5 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ChatRoomRepository : JpaRepository<ChatRoomEntity, Long> {
-}
+interface ChatRoomRepository : JpaRepository<ChatRoomEntity, Long>

@@ -44,7 +44,7 @@ class ChatRoomController(
     }
 
     @Operation(summary = "방 삭제")
-    @DeleteMapping("/rooms/{roomId}/delete")
+    @DeleteMapping("/rooms/{roomId}")
     fun deleteRoom(@PathVariable roomId: Long, @GetAuthenticatedId userId: Long): BaseResponse<Unit> {
         return chatRoomService.deleteRoom(roomId = roomId, userId = userId)
     }
