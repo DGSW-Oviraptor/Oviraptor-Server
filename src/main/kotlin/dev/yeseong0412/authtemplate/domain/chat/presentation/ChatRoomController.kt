@@ -26,7 +26,7 @@ class ChatRoomController(
     fun getAllRooms(): BaseResponse<List<ChatRoom>> = chatRoomService.getAllRooms()
 
     @Operation(summary = "방 생성")
-    @PostMapping("/create")
+    @PostMapping
     fun createRoom(@RequestParam name: String, @GetAuthenticatedId userId: Long): BaseResponse<Unit> {
         return chatRoomService.createRoom(name, userId)
     }

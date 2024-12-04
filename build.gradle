@@ -20,10 +20,10 @@ repositories {
 }
 
 dependencies {
-    //WebSocket
+    // WebSocket
     implementation("org.webjars:stomp-websocket:2.3.4")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
-    //mail
+    // Mail
     implementation("org.springframework.boot:spring-boot-starter-mail")
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -32,7 +32,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
-    //SWAGGER
+    // SWAGGER
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
     // JWT

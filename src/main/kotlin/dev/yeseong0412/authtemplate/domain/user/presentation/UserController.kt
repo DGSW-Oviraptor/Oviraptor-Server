@@ -50,7 +50,7 @@ class UserController(
     }
 
     @Operation(summary = "친구추가")
-    @PostMapping("/friends/add")
+    @PostMapping("/friends")
     fun addFriend(@GetAuthenticatedId userId: Long, @RequestParam email: String): BaseResponse<Unit> {
         return userService.addFriend(userId, email)
     }

@@ -81,7 +81,7 @@ class UserServiceImpl(
             throw CustomException(UserErrorCode.USER_ALREADY_EXIST)
         }
 
-        if (mailRepository.findByEmail(request.email).isNullOrEmpty() || mailRepository.findByEmail(
+        if (!mailRepository.existsByEmail(request.email) || mailRepository.findByEmail(
                 request.email
             ) != request.authCode
         ) {
