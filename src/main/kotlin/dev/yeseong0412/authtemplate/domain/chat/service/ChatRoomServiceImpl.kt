@@ -33,6 +33,7 @@ class ChatRoomServiceImpl(
     @Transactional(readOnly = true)
     override fun getAllRooms(): BaseResponse<List<ChatRoom>> {
         val rooms = chatRoomRepository.findAll()
+
         return BaseResponse(
             message = "success",
             data = rooms.map {
@@ -157,8 +158,8 @@ class ChatRoomServiceImpl(
     @Transactional
     override fun sendChat(roomId: Long, token: String, message: ChatMessage): ChatOnline {
         val user = userRepository.findByEmail(jwtUtils.getUsername(token))
-
         val chatMessage = ChatMessageEntity(roomId = roomId, writerId = user!!.id!!, content = message.message)
+
         chatMessageRepository.save(chatMessage)
 
         return ChatOnline(writer = user.name, message = message.message)
@@ -167,6 +168,10 @@ class ChatRoomServiceImpl(
     @Transactional(readOnly = true)
     override fun getAllMessages(roomId: Long, objectId: String?, userId: Long): BaseResponse<List<ChatMessageInfo>> {
         val room = getRoom(roomId)
+        val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
+
+        if (!room.participants.contains(user)) throw CustomException(ChatRoomErrorCode.CHAT_ROOM_NOT_FOUND)
+
         val id = if (objectId != null) ObjectId(objectId) else ObjectId()
         val pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "_id"))
         val messages = chatMessageRepository.findMessagesByRoomIdAndObjectId(roomId, id, pageable)
