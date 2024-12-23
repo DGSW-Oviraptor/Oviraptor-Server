@@ -2,6 +2,7 @@ package dev.yeseong0412.authtemplate.domain.user.domain.entity
 
 import dev.yeseong0412.authtemplate.domain.chat.domain.entity.ChatRoomEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.enums.UserRoles
+import dev.yeseong0412.authtemplate.global.common.BaseEntity
 import jakarta.persistence.*
 
 @Entity
@@ -39,4 +40,4 @@ class UserEntity(
     @Column(nullable = false)
     var role: UserRoles = UserRoles.ROLE_USER
 
-)
+) : BaseEntity()

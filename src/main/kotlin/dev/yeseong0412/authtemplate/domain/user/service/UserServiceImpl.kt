@@ -1,9 +1,7 @@
 package dev.yeseong0412.authtemplate.domain.user.service
 
 import dev.yeseong0412.authtemplate.domain.auth.exception.EmailErrorCode
-import dev.yeseong0412.authtemplate.domain.chat.domain.repository.ChatMessageRepository
 import dev.yeseong0412.authtemplate.domain.chat.domain.repository.ChatRoomRepository
-import dev.yeseong0412.authtemplate.domain.chat.presentation.dto.response.ChatRoom
 import dev.yeseong0412.authtemplate.domain.mail.domain.repository.MailRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
@@ -18,35 +16,17 @@ import dev.yeseong0412.authtemplate.global.security.jwt.util.JwtUtils
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
     private val mailRepository: MailRepository,
     private val bytePasswordEncoder: BCryptPasswordEncoder,
-    private val chatMessageRepository: ChatMessageRepository,
     private val jwtUtils: JwtUtils,
     private val userMapper: UserMapper,
     private val chatRoomRepository: ChatRoomRepository
 ) : UserService {
-
-    @Transactional(readOnly = true)
-    override fun getMyRooms(userId: Long): BaseResponse<List<ChatRoom>> {
-        val user = getUser(userId)
-        val rooms = user.rooms
-
-        return BaseResponse(
-            message = "success",
-            data = rooms.map {
-                ChatRoom(
-                    id = it.id,
-                    name = it.name,
-                    participants = it.participants.map { pr -> pr.name },
-                    lastMessage = chatMessageRepository.findFirstByRoomIdOrderByIdDesc(it.id ?: 0)?.content ?: ""
-                )
-            }
-        )
-    }
 
     @Transactional(readOnly = true)
     override fun getUserInfo(userId: Long): BaseResponse<UserInfo> {
@@ -65,6 +45,7 @@ class UserServiceImpl(
 
         if (username.isNotBlank()) {
             user.name = username.trim()
+            user.modifiedAt = LocalDateTime.now()
             userRepository.save(user)
         }
 

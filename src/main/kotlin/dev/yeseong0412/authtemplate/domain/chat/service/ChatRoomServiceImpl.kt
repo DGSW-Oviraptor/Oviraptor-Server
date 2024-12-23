@@ -31,8 +31,8 @@ class ChatRoomServiceImpl(
 ) : ChatRoomService {
 
     @Transactional(readOnly = true)
-    override fun getAllRooms(): BaseResponse<List<ChatRoom>> {
-        val rooms = chatRoomRepository.findAll()
+    override fun getAllRooms(userId: Long): BaseResponse<List<ChatRoom>> {
+        val rooms = chatRoomRepository.findMyRooms(userId)
 
         return BaseResponse(
             message = "success",
@@ -85,8 +85,6 @@ class ChatRoomServiceImpl(
     override fun leaveRoom(roomId: Long, userId: Long): BaseResponse<Unit> {
         val room = getRoom(roomId)
         val user = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
-
-        if (userId == room.adminId) deleteRoom(roomId, userId)
 
         room.participants.remove(user)
         user.rooms.remove(room)
