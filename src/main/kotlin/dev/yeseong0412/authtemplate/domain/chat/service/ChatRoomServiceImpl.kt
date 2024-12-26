@@ -65,11 +65,13 @@ class ChatRoomServiceImpl(
     }
 
     @Transactional
-    override fun inviteToRoom(roomId: Long, userEmail: String): BaseResponse<Unit> {
+    override fun inviteToRoom(userId:Long,roomId: Long, userEmail: String): BaseResponse<Unit> {
+        val me = userRepository.findById(userId).orElseThrow { CustomException(UserErrorCode.USER_NOT_FOUND) }
         val room = getRoom(roomId)
         val user = userRepository.findByEmail(userEmail) ?: throw CustomException(UserErrorCode.USER_NOT_FOUND)
-
+        if (me !in room.participants) throw CustomException(ChatRoomErrorCode.YOU_DONT_BELONG)
         if (room.participants.size >= 8) throw CustomException(ChatRoomErrorCode.CHAT_ROOM_NUMBER_LIMIT_EXCEEDED)
+        if (user in room.participants) throw CustomException(ChatRoomErrorCode.USER_ALREADY_EXISTS)
 
         room.participants.add(user)
         user.rooms.add(room)

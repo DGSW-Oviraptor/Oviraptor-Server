@@ -33,8 +33,8 @@ class ChatRoomController(
 
     @Operation(summary = "초대")
     @PostMapping("/rooms/{roomId}/invite")
-    fun inviteToRoom(@PathVariable roomId: Long, @RequestParam participant: String): BaseResponse<Unit> {
-        return chatRoomService.inviteToRoom(roomId, participant)
+    fun inviteToRoom(@GetAuthenticatedId userId:Long, @PathVariable roomId: Long, @RequestParam participant: String): BaseResponse<Unit> {
+        return chatRoomService.inviteToRoom(userId,roomId, participant)
     }
 
     @Operation(summary = "방 나가기")
