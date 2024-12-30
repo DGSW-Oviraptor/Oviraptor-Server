@@ -169,6 +169,7 @@ class UserServiceImpl(
             it.participants.remove(user)
             if (it.participants.isEmpty()) chatRoomRepository.delete(it)
         }
+
         user.friends.map { it.friends.remove(user) }
         userRepository.delete(user)
 

@@ -23,7 +23,8 @@ class ChatRoomController(
 
     @Operation(summary = "방 목록")
     @GetMapping("/rooms")
-    fun getAllRooms(@GetAuthenticatedId userId: Long): BaseResponse<List<ChatRoom>> = chatRoomService.getAllRooms(userId)
+    fun getAllRooms(@GetAuthenticatedId userId: Long): BaseResponse<List<ChatRoom>> =
+        chatRoomService.getAllRooms(userId)
 
     @Operation(summary = "방 생성")
     @PostMapping
@@ -33,8 +34,12 @@ class ChatRoomController(
 
     @Operation(summary = "초대")
     @PostMapping("/rooms/{roomId}/invite")
-    fun inviteToRoom(@GetAuthenticatedId userId:Long, @PathVariable roomId: Long, @RequestParam participant: String): BaseResponse<Unit> {
-        return chatRoomService.inviteToRoom(userId,roomId, participant)
+    fun inviteToRoom(
+        @GetAuthenticatedId userId: Long,
+        @PathVariable roomId: Long,
+        @RequestParam participant: String
+    ): BaseResponse<Unit> {
+        return chatRoomService.inviteToRoom(userId, roomId, participant)
     }
 
     @Operation(summary = "방 나가기")
@@ -61,16 +66,6 @@ class ChatRoomController(
         return chatRoomService.enterRoom(roomId = roomId, userId = userId)
     }
 
-    @Operation(summary = "채팅 불러오기", description = "처음 실행할때는 objectId 필요 없음")
-    @GetMapping("/{roomId}")
-    fun getAllMessages(
-        @PathVariable roomId: Long,
-        @RequestParam(required = false) objectId: String?,
-        @GetAuthenticatedId userId: Long
-    ): BaseResponse<List<ChatMessageInfo>> {
-        return chatRoomService.getAllMessages(roomId, objectId, userId)
-    }
-
     @MessageMapping("/exit/{roomId}")
     @SendTo("/topic/room/{roomId}")
     fun exitRoom(@DestinationVariable roomId: Long, @GetAuthenticatedId userId: Long): ChatOnline {
@@ -85,5 +80,15 @@ class ChatRoomController(
         message: ChatMessage
     ): ChatOnline {
         return chatRoomService.sendChat(roomId = roomId, token = token, message = message)
+    }
+
+    @Operation(summary = "채팅 불러오기", description = "처음 실행할때는 objectId 필요 없음")
+    @GetMapping("/{roomId}")
+    fun getAllMessages(
+        @PathVariable roomId: Long,
+        @RequestParam(required = false) objectId: String?,
+        @GetAuthenticatedId userId: Long
+    ): BaseResponse<List<ChatMessageInfo>> {
+        return chatRoomService.getAllMessages(roomId, objectId, userId)
     }
 }

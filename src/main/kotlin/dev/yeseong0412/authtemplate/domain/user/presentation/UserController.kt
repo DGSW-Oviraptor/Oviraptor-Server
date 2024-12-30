@@ -68,7 +68,7 @@ class UserController(
 
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping
-    fun deleteUser(@GetAuthenticatedId userId: Long, @RequestBody deleteUserRequest: DeleteUserRequest): BaseResponse<Unit> {
-        return userService.deleteUser(userId, deleteUserRequest)
+    fun deleteUser(@GetAuthenticatedId userId: Long, @RequestBody request: DeleteUserRequest): BaseResponse<Unit> {
+        return userService.deleteUser(userId, request)
     }
 }
