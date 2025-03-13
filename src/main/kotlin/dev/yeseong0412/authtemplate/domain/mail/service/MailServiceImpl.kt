@@ -1,6 +1,6 @@
 package dev.yeseong0412.authtemplate.domain.mail.service
 
-import dev.yeseong0412.authtemplate.domain.auth.exception.EmailErrorCode
+import dev.yeseong0412.authtemplate.domain.mail.exception.EmailErrorCode
 import dev.yeseong0412.authtemplate.domain.mail.domain.repository.MailRepository
 import dev.yeseong0412.authtemplate.global.common.BaseResponse
 import dev.yeseong0412.authtemplate.global.exception.CustomException

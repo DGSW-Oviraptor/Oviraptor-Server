@@ -7,7 +7,7 @@ import dev.yeseong0412.authtemplate.domain.user.domain.entity.UserEntity
 import dev.yeseong0412.authtemplate.domain.user.domain.mapper.UserMapper
 import dev.yeseong0412.authtemplate.domain.mail.domain.repository.MailRepository
 import dev.yeseong0412.authtemplate.domain.user.domain.repository.UserRepository
-import dev.yeseong0412.authtemplate.domain.auth.exception.EmailErrorCode
+import dev.yeseong0412.authtemplate.domain.mail.exception.EmailErrorCode
 import dev.yeseong0412.authtemplate.domain.auth.presentation.dto.response.LoginResponse
 import dev.yeseong0412.authtemplate.domain.user.exception.UserErrorCode
 import dev.yeseong0412.authtemplate.global.security.jwt.exception.JwtErrorCode
