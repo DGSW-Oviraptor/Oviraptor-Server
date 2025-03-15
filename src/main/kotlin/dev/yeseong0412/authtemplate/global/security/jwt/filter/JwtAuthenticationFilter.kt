@@ -71,7 +71,7 @@ class JwtAuthenticationFilter(
         errorCode: JwtErrorCode
     ) {
         response.status = errorCode.status.value()
-        response.contentType = "application/json;charset=UTF-8"
+        response.contentType = "application/json; charset=UTF-8"
 
         response.writer.write(
             objectMapper.writeValueAsString(

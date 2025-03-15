@@ -2,7 +2,6 @@ package dev.yeseong0412.authtemplate.global.config.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.yeseong0412.authtemplate.global.security.jwt.filter.JwtAuthenticationFilter
-import dev.yeseong0412.authtemplate.global.security.jwt.filter.JwtExceptionFilter
 import dev.yeseong0412.authtemplate.global.security.jwt.handler.JwtAccessDeniedHandler
 import dev.yeseong0412.authtemplate.global.security.jwt.handler.JwtAuthenticationEntryPoint
 import dev.yeseong0412.authtemplate.global.security.jwt.util.JwtUtils
@@ -23,8 +22,7 @@ class SecurityConfig (
     private val jwtUtils: JwtUtils,
     private val objectMapper: ObjectMapper,
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
-    private val jwtAccessDeniedHandler: JwtAccessDeniedHandler,
-    private val jwtExceptionFilter: JwtExceptionFilter
+    private val jwtAccessDeniedHandler: JwtAccessDeniedHandler
 ) {
 
     @Bean
@@ -63,7 +61,6 @@ class SecurityConfig (
             }
 
             .addFilterBefore(JwtAuthenticationFilter(jwtUtils, objectMapper), UsernamePasswordAuthenticationFilter::class.java)
-            .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter::class.java)
             .build()
     }
 
